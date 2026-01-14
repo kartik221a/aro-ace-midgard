@@ -38,6 +38,10 @@ export default function LoginPage() {
         setLoading(true);
         setError("");
         try {
+            if (!auth) {
+                setError("Authentication service not available.");
+                return;
+            }
             const provider = new GoogleAuthProvider();
             const result = await signInWithPopup(auth, provider);
             await checkAndCreateUser(result.user);
@@ -55,6 +59,11 @@ export default function LoginPage() {
         setError("");
 
         try {
+            if (!auth) {
+                setError("Authentication service not available.");
+                return;
+            }
+
             if (isSignUp) {
                 const result = await createUserWithEmailAndPassword(auth, email, password);
                 // Optionally update display name here if we had a name field
@@ -72,6 +81,7 @@ export default function LoginPage() {
     };
 
     const checkAndCreateUser = async (user: any) => {
+        if (!db) return;
         const userRef = doc(db, "users", user.uid);
         const userSnap = await getDoc(userRef);
 

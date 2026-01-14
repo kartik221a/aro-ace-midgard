@@ -2,8 +2,8 @@
 "use client";
 
 import { createContext, useContext, useEffect, useState } from "react";
-import { User, onAuthStateChanged, signOut as firebaseSignOut } from "firebase/auth";
-import { doc, onSnapshot } from "firebase/firestore";
+import { User, onAuthStateChanged, signOut as firebaseSignOut, Auth } from "firebase/auth";
+import { doc, onSnapshot, Firestore } from "firebase/firestore";
 import { auth, db } from "@/lib/firebase/client";
 import { useRouter } from "next/navigation";
 import { UserData } from "@/types";
@@ -75,7 +75,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }, [user]);
 
     const logout = async () => {
-        await firebaseSignOut(auth);
+        if (auth) {
+            await firebaseSignOut(auth);
+        }
         document.cookie = "session=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT";
         router.push("/");
     };
