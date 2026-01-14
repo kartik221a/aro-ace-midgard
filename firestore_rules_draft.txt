@@ -1,0 +1,45 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // ... existing rules ...
+
+    // LIKES COLLECTION
+    match /likes/{likeId} {
+      // Helper to check if user is authenticated and is the "owner" of the data
+      function isOwner(userId) {
+        return request.auth != null && request.auth.uid == userId;
+      }
+
+      // CREATE: Only authenticated users can create a like FROM themselves
+      // enforcing the ID format is optional but good practice: {from}_{to}
+      allow create: if request.auth != null 
+                    && request.resource.data.fromUserId == request.auth.uid
+                    && likeId == request.resource.data.fromUserId + "_" + request.resource.data.toUserId;
+
+      // UPDATE: Only the owner can update (e.g., changing type)
+      // Must enforce that 'fromUserId' doesn't change
+      allow update: if isOwner(resource.data.fromUserId)
+                    && request.resource.data.fromUserId == resource.data.fromUserId;
+
+      // DELETE: Only the owner can remove their like
+      allow delete: if isOwner(resource.data.fromUserId);
+
+      // READ: 
+      // Option A (Stricter): Only the sender can read their own likes.
+      // Recipient doesn't see them until they match (handled by 'matches' collection).
+      allow read: if isOwner(resource.data.fromUserId);
+    }
+
+    // MATCHES COLLECTION
+    match /matches/{matchId} {
+      // READ: Only the two users involved in the match can read it
+      allow read: if request.auth != null 
+                  && (request.auth.uid in resource.data.userIds);
+
+      // WRITE: ONLY Cloud Functions (backend) should write to matches.
+      // Users should NOT be able to create matches directly.
+      allow write: if false; 
+    }
+  }
+}
