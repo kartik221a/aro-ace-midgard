@@ -74,21 +74,21 @@ export function BrowseFilters({ filters, setFilters, totalResults }: BrowseFilte
         <div className="space-y-6">
             {/* Search */}
             <div className="space-y-2">
-                <Label>Search</Label>
+                <Label className="text-slate-300">Search</Label>
                 <div className="relative">
-                    <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-slate-500" />
+                    <Search className="absolute left-3 top-3 h-4 w-4 text-slate-500" />
                     <Input
                         placeholder="Search by name..."
                         value={filters.searchTerm}
                         onChange={(e) => update("searchTerm", e.target.value)}
-                        className="pl-9"
+                        className="pl-9 bg-white/5 border-white/10 text-slate-200 placeholder:text-slate-600 focus-visible:ring-rose-500/50"
                     />
                 </div>
             </div>
 
             {/* Age Range */}
             <div className="space-y-4">
-                <Label>Age Range</Label>
+                <Label className="text-slate-300">Age Range</Label>
                 <div className="flex items-center gap-4">
                     {/* Min Age Group */}
                     <div className="flex-1 space-y-1">
@@ -97,7 +97,7 @@ export function BrowseFilters({ filters, setFilters, totalResults }: BrowseFilte
                             <Button
                                 variant="outline"
                                 size="icon"
-                                className="h-9 w-9 rounded-r-none border-r-0"
+                                className="h-9 w-9 rounded-r-none border-r-0 bg-white/5 border-white/10 hover:bg-white/10 text-slate-300"
                                 onClick={() => {
                                     const newMin = Math.max(18, filters.ageRange[0] - 1);
                                     if (newMin <= filters.ageRange[1]) {
@@ -111,22 +111,14 @@ export function BrowseFilters({ filters, setFilters, totalResults }: BrowseFilte
 
                             <Input
                                 type="number"
-                                className="h-9 min-w-[3rem] w-full text-center border-y border-slate-200 bg-slate-50 text-sm font-medium rounded-none focus-visible:ring-0 focus-visible:ring-offset-0 px-1"
+                                className="h-9 min-w-[3rem] w-full text-center border-y border-white/10 bg-black/20 text-sm font-medium rounded-none focus-visible:ring-0 focus-visible:ring-offset-0 px-1 text-slate-200"
                                 value={localAgeRange[0]}
                                 onChange={(e) => {
                                     const val = parseInt(e.target.value);
                                     if (!isNaN(val)) {
                                         setLocalAgeRange([val, localAgeRange[1]]);
                                     } else if (e.target.value === "") {
-                                        // Allow empty string while typing
-                                        setLocalAgeRange([NaN, localAgeRange[1]]); // Store NaN or handle empty logic carefully. 
-                                        // Actually easier to just keep local state as number string or allow invalid states momentarily.
-                                        // But types say number. Let's stick to safe parsing, maybe ignore empty intermediate state or use string local state if needed.
-                                        // For simplicity, let's just use what works:
-                                        // If empty, don't update local number to bad value.
-                                        // Actually better: let local state diverge from prop types? No.
-                                        // I'll stick to updating if valid number, or maybe 0?
-                                        // Let's assume user types number.
+                                        setLocalAgeRange([NaN, localAgeRange[1]]);
                                     }
                                 }}
                                 onBlur={(e) => {
@@ -136,7 +128,7 @@ export function BrowseFilters({ filters, setFilters, totalResults }: BrowseFilte
                                     if (val > filters.ageRange[1]) val = filters.ageRange[1];
 
                                     update("ageRange", [val, filters.ageRange[1]]);
-                                    setLocalAgeRange([val, filters.ageRange[1]]); // Resync on blur to clean values
+                                    setLocalAgeRange([val, filters.ageRange[1]]);
                                 }}
                                 onKeyDown={(e) => {
                                     if (e.key === "Enter") {
@@ -148,7 +140,7 @@ export function BrowseFilters({ filters, setFilters, totalResults }: BrowseFilte
                             <Button
                                 variant="outline"
                                 size="icon"
-                                className="h-9 w-9 rounded-l-none border-l-0"
+                                className="h-9 w-9 rounded-l-none border-l-0 bg-white/5 border-white/10 hover:bg-white/10 text-slate-300"
                                 onClick={() => {
                                     const newMin = Math.min(100, filters.ageRange[0] + 1);
                                     if (newMin <= filters.ageRange[1]) {
@@ -169,7 +161,7 @@ export function BrowseFilters({ filters, setFilters, totalResults }: BrowseFilte
                             <Button
                                 variant="outline"
                                 size="icon"
-                                className="h-9 w-9 rounded-r-none border-r-0"
+                                className="h-9 w-9 rounded-r-none border-r-0 bg-white/5 border-white/10 hover:bg-white/10 text-slate-300"
                                 onClick={() => {
                                     const newMax = Math.max(18, filters.ageRange[1] - 1);
                                     if (newMax >= filters.ageRange[0]) {
@@ -183,7 +175,7 @@ export function BrowseFilters({ filters, setFilters, totalResults }: BrowseFilte
 
                             <Input
                                 type="number"
-                                className="h-9 min-w-[3rem] w-full text-center border-y border-slate-200 bg-slate-50 text-sm font-medium rounded-none focus-visible:ring-0 focus-visible:ring-offset-0 px-1"
+                                className="h-9 min-w-[3rem] w-full text-center border-y border-white/10 bg-black/20 text-sm font-medium rounded-none focus-visible:ring-0 focus-visible:ring-offset-0 px-1 text-slate-200"
                                 value={localAgeRange[1]}
                                 onChange={(e) => {
                                     const val = parseInt(e.target.value);
@@ -210,7 +202,7 @@ export function BrowseFilters({ filters, setFilters, totalResults }: BrowseFilte
                             <Button
                                 variant="outline"
                                 size="icon"
-                                className="h-9 w-9 rounded-l-none border-l-0"
+                                className="h-9 w-9 rounded-l-none border-l-0 bg-white/5 border-white/10 hover:bg-white/10 text-slate-300"
                                 onClick={() => {
                                     const newMax = Math.min(100, filters.ageRange[1] + 1);
                                     if (newMax >= filters.ageRange[0]) {
@@ -226,19 +218,19 @@ export function BrowseFilters({ filters, setFilters, totalResults }: BrowseFilte
                 </div>
             </div>
 
-            <hr className="border-slate-100" />
+            <hr className="border-white/10" />
 
             {/* Looking For (Intent) */}
             <div className="space-y-2">
-                <Label>Looking For</Label>
+                <Label className="text-slate-300">Looking For</Label>
                 <Select
                     value={filters.intents[0] || "all"}
                     onValueChange={(val) => update("intents", val === "all" ? [] : [val])}
                 >
-                    <SelectTrigger>
+                    <SelectTrigger className="bg-white/5 border-white/10 text-slate-200">
                         <SelectValue placeholder="Any Intent" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="bg-[#1a1d2d] border-white/10 text-slate-200">
                         <SelectItem value="all">Any Intent</SelectItem>
                         <SelectItem value="friends">Friends Only</SelectItem>
                         <SelectItem value="relationship">Relationship Only</SelectItem>
@@ -249,34 +241,37 @@ export function BrowseFilters({ filters, setFilters, totalResults }: BrowseFilte
 
             {/* Gender */}
             <div className="space-y-2">
-                <Label>Gender</Label>
+                <Label className="text-slate-300">Gender</Label>
                 <MultiSelect
                     options={toOptions(C.GENDER_OPTIONS)}
                     selected={filters.genders}
                     onChange={(val) => update("genders", val)}
                     placeholder="Any Gender"
+                    className="bg-white/5 border-white/10 text-slate-200"
                 />
             </div>
 
             {/* Sex Desire */}
             <div className="space-y-2">
-                <Label>Desire for Sex</Label>
+                <Label className="text-slate-300">Desire for Sex</Label>
                 <MultiSelect
                     options={toOptions(C.DESIRE_OPTIONS)}
                     selected={filters.sexDesire}
                     onChange={(val) => update("sexDesire", val)}
                     placeholder="Any Preference"
+                    className="bg-white/5 border-white/10 text-slate-200"
                 />
             </div>
 
             {/* Romance Desire */}
             <div className="space-y-2">
-                <Label>Desire for Romance</Label>
+                <Label className="text-slate-300">Desire for Romance</Label>
                 <MultiSelect
                     options={toOptions(C.DESIRE_OPTIONS)}
                     selected={filters.romanceDesire}
                     onChange={(val) => update("romanceDesire", val)}
                     placeholder="Any Preference"
+                    className="bg-white/5 border-white/10 text-slate-200"
                 />
             </div>
 
@@ -328,7 +323,7 @@ export function BrowseFilters({ filters, setFilters, totalResults }: BrowseFilte
 
             <Button
                 variant="outline"
-                className="w-full text-slate-500 hover:text-slate-700"
+                className="w-full bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 border-rose-500/20 hover:border-rose-500/40 transition-all duration-300"
                 onClick={clearFilters}
             >
                 Clear All Filters
@@ -337,17 +332,24 @@ export function BrowseFilters({ filters, setFilters, totalResults }: BrowseFilte
     );
 
     return (
-        <div className="bg-white rounded-lg shadow-sm border border-slate-100 p-6 h-fit sticky top-24">
-            <div className="flex items-center justify-between mb-6">
-                <h2 className="font-bold text-lg flex items-center gap-2">
-                    <Filter className="w-5 h-5 text-rose-500" /> Filters
-                </h2>
-                <Badge variant="secondary" className="bg-slate-100 text-slate-600">
-                    {totalResults} found
-                </Badge>
-            </div>
+        <div className="h-fit sticky top-24">
+            <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-[#0f111a]/80 backdrop-blur-xl shadow-2xl p-6">
+                {/* Decorative Gradient Blob */}
+                <div className="absolute -top-10 -right-10 w-32 h-32 bg-rose-500/20 rounded-full blur-3xl pointer-events-none" />
 
-            <FilterContent />
+                <div className="flex items-center justify-between mb-6 relative z-10">
+                    <h2 className="font-bold text-xl flex items-center gap-2 text-white">
+                        <Filter className="w-5 h-5 text-rose-400" /> Filters
+                    </h2>
+                    <Badge variant="secondary" className="bg-white/10 text-slate-300 border-white/5">
+                        {totalResults} found
+                    </Badge>
+                </div>
+
+                <div className="relative z-10">
+                    <FilterContent />
+                </div>
+            </div>
         </div>
     );
 }

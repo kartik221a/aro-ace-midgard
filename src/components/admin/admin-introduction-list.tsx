@@ -11,10 +11,11 @@ import {
     DialogFooter,
     DialogHeader,
     DialogTitle,
-    DialogTrigger,
 } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import SpotlightCard from "@/components/ui/reactbits/spotlight-card";
+import MagnetButton from "@/components/ui/reactbits/magnet-button";
 
 interface AdminIntroductionListProps {
     introductions: Introduction[];
@@ -42,41 +43,45 @@ export function AdminIntroductionList({ introductions, onUpdateStatus, type }: A
     };
 
     if (introductions.length === 0) {
-        return <div className="p-8 text-center text-slate-500 bg-slate-50 rounded-lg border border-dashed">No items found in this category.</div>;
+        return (
+            <div className="p-12 text-center border-dashed border border-white/10 bg-white/5 rounded-2xl">
+                <div className="text-slate-400">No items found in this category.</div>
+            </div>
+        );
     }
 
     return (
         <div className="grid gap-4">
-            {introductions.map((intro) => (
-                <div key={intro.uid} className="bg-white border rounded-lg p-4 flex flex-col md:flex-row gap-4 items-start md:items-center justify-between shadow-sm">
-                    <div className="flex items-center gap-4">
-                        <div className="h-12 w-12 rounded-full bg-slate-100 overflow-hidden shrink-0">
+            {introductions.map((intro, index) => (
+                <SpotlightCard key={intro.uid} className="flex flex-col md:flex-row gap-6 items-start md:items-center justify-between p-6 rounded-2xl border border-white/10 bg-white/5" spotlightColor="rgba(255, 255, 255, 0.1)">
+                    <div className="flex items-center gap-5">
+                        <div className="h-16 w-16 rounded-full bg-white/5 overflow-hidden shrink-0 border border-white/10">
                             {intro.images.profileUrl ? (
                                 <img src={intro.images.profileUrl} alt={intro.basicInfo.name} className="h-full w-full object-cover" />
                             ) : (
-                                <div className="h-full w-full flex items-center justify-center text-slate-400 font-bold">?</div>
+                                <div className="h-full w-full flex items-center justify-center text-slate-600 font-bold">?</div>
                             )}
                         </div>
                         <div>
-                            <div className="flex items-center gap-2">
-                                <h3 className="font-semibold text-lg hover:underline cursor-pointer" onClick={() => window.open(`/profile/${intro.uid}`, '_blank')}>
+                            <div className="flex items-center gap-3 mb-1">
+                                <h3 className="font-bold text-xl text-white hover:text-rose-400 transition-colors cursor-pointer" onClick={() => window.open(`/profile/${intro.uid}`, '_blank')}>
                                     {intro.basicInfo.name}
                                 </h3>
                                 {type === "approved" && intro.approvedBy && (
-                                    <Badge variant="outline" className="text-[10px] h-5 px-1 bg-green-50 text-green-700 border-green-200">
+                                    <Badge variant="outline" className="text-[10px] h-5 px-1.5 bg-green-500/20 text-green-300 border-green-500/30">
                                         Approved by {intro.approvedBy}
                                     </Badge>
                                 )}
                             </div>
 
-                            <div className="text-sm text-slate-500 flex gap-2">
-                                <span>{intro.basicInfo.gender.join(", ")}</span>
-                                <span>•</span>
+                            <div className="text-sm text-slate-400 flex gap-2 items-center mb-2">
+                                <span className="capitalize">{intro.basicInfo.gender.join(", ")}</span>
+                                <span className="w-1 h-1 rounded-full bg-slate-600" />
                                 <span>{intro.basicInfo.country}</span>
                             </div>
 
                             {type === "rejected" && intro.rejectionReason && (
-                                <div className="mt-2 text-sm text-red-600 bg-red-50 p-2 rounded flex items-start gap-2">
+                                <div className="mt-2 text-sm text-red-300 bg-red-500/10 border border-red-500/20 p-2 rounded-md flex items-start gap-2">
                                     <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" />
                                     <span>Reason: {intro.rejectionReason}</span>
                                 </div>
@@ -84,53 +89,52 @@ export function AdminIntroductionList({ introductions, onUpdateStatus, type }: A
                         </div>
                     </div>
 
-                    <div className="flex items-center gap-2 w-full md:w-auto mt-2 md:mt-0">
-                        <Button variant="outline" size="sm" asChild>
-                            <a href={`/profile/${intro.uid}`} target="_blank" rel="noopener noreferrer">
-                                <ExternalLink className="w-4 h-4 mr-1" /> View
-                            </a>
-                        </Button>
+                    <div className="flex flex-wrap items-center gap-3 w-full md:w-auto mt-2 md:mt-0">
+                        <MagnetButton className="h-9 px-3 rounded-lg border border-white/10 bg-transparent text-slate-300 hover:bg-white/10 hover:text-white flex items-center justify-center text-sm" onClick={() => window.open(`/profile/${intro.uid}`, '_blank')} strength={10}>
+                            <ExternalLink className="w-4 h-4 mr-2" /> View
+                        </MagnetButton>
 
                         {/* Actions based on type */}
                         {type === "pending" && (
                             <>
-                                <Button size="sm" className="bg-green-600 hover:bg-green-700" onClick={() => onUpdateStatus(intro.uid, "approved")}>
-                                    <Check className="w-4 h-4 mr-1" /> Approve
-                                </Button>
-                                <Button size="sm" variant="destructive" onClick={() => handleRejectClick(intro.uid)}>
-                                    <X className="w-4 h-4 mr-1" /> Reject
-                                </Button>
+                                <MagnetButton className="h-9 px-3 rounded-lg bg-gradient-to-r from-green-600 to-emerald-600 text-white border-none shadow-lg shadow-green-500/20 flex items-center justify-center text-sm" onClick={() => onUpdateStatus(intro.uid, "approved")} strength={10}>
+                                    <Check className="w-4 h-4 mr-2" /> Approve
+                                </MagnetButton>
+                                <MagnetButton className="h-9 px-3 rounded-lg bg-red-500/20 text-red-300 border border-red-500/30 hover:bg-red-500/30 hover:text-red-200 flex items-center justify-center text-sm" onClick={() => handleRejectClick(intro.uid)} strength={10}>
+                                    <X className="w-4 h-4 mr-2" /> Reject
+                                </MagnetButton>
                             </>
                         )}
 
                         {type === "approved" && (
-                            <Button size="sm" variant="outline" className="text-red-600 border-red-200 hover:bg-red-50" onClick={() => handleRejectClick(intro.uid)}>
-                                <X className="w-4 h-4 mr-1" /> Revoke
-                            </Button>
+                            <MagnetButton className="h-9 px-3 rounded-lg bg-red-500/10 text-red-400 border border-red-500/20 hover:bg-red-500/20 flex items-center justify-center text-sm" onClick={() => handleRejectClick(intro.uid)} strength={10}>
+                                <X className="w-4 h-4 mr-2" /> Revoke
+                            </MagnetButton>
                         )}
 
                         {type === "rejected" && (
-                            <Button size="sm" variant="outline" onClick={() => onUpdateStatus(intro.uid, "pending")}>
-                                <RotateCcw className="w-4 h-4 mr-1" /> Reconsider
-                            </Button>
+                            <MagnetButton className="h-9 px-3 rounded-lg border border-white/10 bg-transparent text-slate-300 hover:bg-white/10 flex items-center justify-center text-sm" onClick={() => onUpdateStatus(intro.uid, "pending")} strength={10}>
+                                <RotateCcw className="w-4 h-4 mr-2" /> Reconsider
+                            </MagnetButton>
                         )}
                     </div>
-                </div>
+                </SpotlightCard>
             ))}
 
             <Dialog open={isRejectDialogOpen} onOpenChange={setIsRejectDialogOpen}>
-                <DialogContent>
+                <DialogContent className="bg-[#0f111a] border-white/10 text-slate-200">
                     <DialogHeader>
-                        <DialogTitle>Reject Introduction</DialogTitle>
-                        <DialogDescription>
+                        <DialogTitle className="text-white">Reject Introduction</DialogTitle>
+                        <DialogDescription className="text-slate-400">
                             Please provide a reason for rejecting this profile. This will be visible to other admins.
                         </DialogDescription>
                     </DialogHeader>
                     <div className="grid gap-4 py-4">
                         <div className="grid gap-2">
-                            <Label htmlFor="reason">Rejection Reason</Label>
+                            <Label htmlFor="reason" className="text-slate-300">Rejection Reason</Label>
                             <Textarea
                                 id="reason"
+                                className="bg-white/5 border-white/10 text-white focus:border-rose-500/50"
                                 placeholder="e.g. Inappropriate images, Spam, Incomplete profile..."
                                 value={rejectionReason}
                                 onChange={(e) => setRejectionReason(e.target.value)}
@@ -138,8 +142,8 @@ export function AdminIntroductionList({ introductions, onUpdateStatus, type }: A
                         </div>
                     </div>
                     <DialogFooter>
-                        <Button variant="outline" onClick={() => setIsRejectDialogOpen(false)}>Cancel</Button>
-                        <Button variant="destructive" onClick={confirmReject}>Reject Profile</Button>
+                        <Button variant="ghost" onClick={() => setIsRejectDialogOpen(false)} className="text-slate-400 hover:text-white hover:bg-white/5">Cancel</Button>
+                        <Button variant="destructive" onClick={confirmReject} className="bg-red-600 hover:bg-red-700 text-white">Reject Profile</Button>
                     </DialogFooter>
                 </DialogContent>
             </Dialog>

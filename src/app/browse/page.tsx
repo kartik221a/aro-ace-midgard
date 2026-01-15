@@ -12,6 +12,8 @@ import { Filter } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useAuth } from "@/lib/auth-context";
 import { LikesService, LikeType } from "@/lib/services/likes";
+import { SplitText } from "@/components/ui/reactbits/split-text";
+import { motion } from "framer-motion";
 
 export default function BrowsePage() {
     const { user } = useAuth();
@@ -153,92 +155,113 @@ export default function BrowsePage() {
     }, [introductions, filters, myLikes]);
 
     return (
-        <div className="container mx-auto px-4 py-12">
-            <SectionDivider title="Browse Introductions" />
+        <div className="min-h-screen pt-24 pb-20 px-4">
+            <div className="container mx-auto">
+                <div className="flex flex-col md:flex-row justify-between items-end mb-8 gap-4">
+                    <div>
+                        <h1 className="text-4xl font-bold mb-2">
+                            <SplitText
+                                text="Browse Introductions"
+                                className="text-4xl font-bold text-white inline-block"
+                                delay={0.1}
+                            />
+                        </h1>
+                        <p className="text-slate-400">Find new friends and potential partners.</p>
+                    </div>
 
-            {/* Mobile Filter Toggle */}
-            <div className="lg:hidden mb-6">
-                <Sheet>
-                    <SheetTrigger asChild>
-                        <Button variant="outline" className="w-full">
-                            <Filter className="w-4 h-4 mr-2" /> Filters
-                        </Button>
-                    </SheetTrigger>
-                    <SheetContent side="left" className="w-[300px] sm:w-[400px] overflow-y-auto">
-                        <div className="py-4">
+                    {/* Mobile Filter Toggle */}
+                    <div className="lg:hidden">
+                        <Sheet>
+                            <SheetTrigger asChild>
+                                <Button variant="outline" className="border-white/10 bg-white/5 text-slate-300 hover:text-white hover:bg-white/10">
+                                    <Filter className="w-4 h-4 mr-2" /> Filters
+                                </Button>
+                            </SheetTrigger>
+                            <SheetContent side="left" className="w-[300px] sm:w-[400px] overflow-y-auto bg-[#0f111a] border-r border-white/10 text-slate-200">
+                                <div className="py-4">
+                                    <BrowseFilters
+                                        filters={filters}
+                                        setFilters={setFilters}
+                                        totalResults={filteredIntroductions.length}
+                                    />
+                                </div>
+                            </SheetContent>
+                        </Sheet>
+                    </div>
+                </div>
+
+                <div className="flex flex-col lg:flex-row gap-8 items-start">
+
+                    {/* Desktop Sidebar */}
+                    <div className="hidden lg:block w-80 shrink-0 sticky top-24">
+                        <div className="glass p-6 rounded-xl border border-white/10">
                             <BrowseFilters
                                 filters={filters}
                                 setFilters={setFilters}
                                 totalResults={filteredIntroductions.length}
                             />
                         </div>
-                    </SheetContent>
-                </Sheet>
-            </div>
+                    </div>
 
-            <div className="flex flex-col lg:flex-row gap-8 items-start">
-
-                {/* Desktop Sidebar */}
-                <div className="hidden lg:block w-80 shrink-0">
-                    <BrowseFilters
-                        filters={filters}
-                        setFilters={setFilters}
-                        totalResults={filteredIntroductions.length}
-                    />
-                </div>
-
-                {/* Grid */}
-                <div className="flex-1 w-full min-w-0">
-                    {loading ? (
-                        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-                            {Array.from({ length: 6 }).map((_, i) => (
-                                <div key={i} className="h-96 bg-slate-100 rounded-lg animate-pulse" />
-                            ))}
-                        </div>
-                    ) : filteredIntroductions.length > 0 ? (
-                        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-                            {filteredIntroductions.map(intro => (
-                                <IntroductionCard
-                                    key={intro.uid}
-                                    introduction={intro}
-                                    myLikeStatus={myLikes[intro.uid] || null}
-                                    onToggleLike={(type) => {
-                                        if (user) {
-                                            LikesService.toggleLike(user.uid, intro.uid, type);
-                                        } else {
-                                            // Optional: Redirect to login or show toast
-                                            alert("Please sign in to like!");
-                                        }
-                                    }}
-                                />
-                            ))}
-                        </div>
-                    ) : (
-                        <div className="text-center py-20 bg-slate-50 rounded-xl border border-dashed border-slate-200">
-                            <h3 className="text-lg font-medium text-slate-800 mb-2">No matches found</h3>
-                            <p className="text-slate-500 max-w-sm mx-auto">
-                                Try adjusting your filters to see more results.
-                            </p>
-                            <Button
-                                variant="link"
-                                className="mt-4 text-rose-500"
-                                onClick={() => setFilters({
-                                    searchTerm: "",
-                                    ageRange: [18, 100],
-                                    intents: [],
-                                    sexDesire: [],
-                                    romanceDesire: [],
-                                    genders: [],
-                                    longDistance: [],
-                                    qpr: [],
-                                    polyamory: [],
-                                    marriage: []
-                                })}
-                            >
-                                Clear all filters
-                            </Button>
-                        </div>
-                    )}
+                    {/* Grid */}
+                    <div className="flex-1 w-full min-w-0">
+                        {loading ? (
+                            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                                {Array.from({ length: 6 }).map((_, i) => (
+                                    <div key={i} className="h-96 bg-white/5 rounded-xl animate-pulse border border-white/5" />
+                                ))}
+                            </div>
+                        ) : filteredIntroductions.length > 0 ? (
+                            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                                {filteredIntroductions.map(intro => (
+                                    <motion.div
+                                        key={intro.uid}
+                                        initial={{ opacity: 0, y: 20 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        transition={{ duration: 0.4 }}
+                                    >
+                                        <IntroductionCard
+                                            introduction={intro}
+                                            myLikeStatus={myLikes[intro.uid] || null}
+                                            onToggleLike={(type) => {
+                                                if (user) {
+                                                    LikesService.toggleLike(user.uid, intro.uid, type);
+                                                } else {
+                                                    // Optional: Redirect to login or show toast
+                                                    alert("Please sign in to like!");
+                                                }
+                                            }}
+                                        />
+                                    </motion.div>
+                                ))}
+                            </div>
+                        ) : (
+                            <div className="text-center py-20 bg-white/5 rounded-xl border border-dashed border-white/10 backdrop-blur-sm">
+                                <h3 className="text-lg font-medium text-slate-200 mb-2">No matches found</h3>
+                                <p className="text-slate-500 max-w-sm mx-auto mb-6">
+                                    Try adjusting your filters to see more results.
+                                </p>
+                                <Button
+                                    variant="link"
+                                    className="text-rose-400 hover:text-rose-300"
+                                    onClick={() => setFilters({
+                                        searchTerm: "",
+                                        ageRange: [18, 100],
+                                        intents: [],
+                                        sexDesire: [],
+                                        romanceDesire: [],
+                                        genders: [],
+                                        longDistance: [],
+                                        qpr: [],
+                                        polyamory: [],
+                                        marriage: []
+                                    })}
+                                >
+                                    Clear all filters
+                                </Button>
+                            </div>
+                        )}
+                    </div>
                 </div>
             </div>
         </div>

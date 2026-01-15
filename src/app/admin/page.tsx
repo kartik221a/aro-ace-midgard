@@ -9,6 +9,8 @@ import { Introduction } from "@/types";
 import { AdminOverview } from "@/components/admin/admin-overview";
 import { Loader2 } from "lucide-react";
 
+import { SplitText } from "@/components/ui/reactbits/split-text";
+
 export default function AdminPage() {
     const { user, userData, loading } = useAuth();
     const router = useRouter();
@@ -46,23 +48,35 @@ export default function AdminPage() {
 
     if (loading || !userData || userData.role !== 'admin') {
         return (
-            <div className="flex h-[80vh] w-full items-center justify-center">
-                <Loader2 className="h-8 w-8 animate-spin text-primary" />
-                <span className="ml-2 text-lg font-medium text-muted-foreground">Loading Admin Panel...</span>
+            <div className="min-h-screen flex items-center justify-center">
+                <div className="flex flex-col items-center gap-4">
+                    <Loader2 className="h-10 w-10 animate-spin text-rose-500" />
+                    <div className="text-rose-300 font-medium animate-pulse">Accessing Admin Panel...</div>
+                </div>
             </div>
         );
     }
 
     return (
-        <div className="container py-8 md:py-10 space-y-8 px-4 md:px-8">
-            <div className="flex items-center justify-between space-y-2">
-                <div>
-                    <h2 className="text-3xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-rose-500 to-indigo-600">Admin Dashboard</h2>
-                    <p className="text-muted-foreground">Overview and management of the AroAce Midgard platform.</p>
+        <div className="min-h-screen pt-24 pb-20 px-4 md:px-8">
+            <div className="max-w-7xl mx-auto space-y-8">
+                <div className="flex items-center justify-between">
+                    <div>
+                        <h1 className="text-3xl font-bold tracking-tight mb-1">
+                            <SplitText
+                                text="Admin Dashboard"
+                                className="text-3xl font-bold text-white inline-block"
+                                delay={0.1}
+                            />
+                        </h1>
+                        <p className="text-slate-400">Overview and management of the AroAce Midgard platform.</p>
+                    </div>
+                </div>
+
+                <div className="glass p-6 rounded-2xl border border-white/10">
+                    <AdminOverview introductions={introductions} usersCount={usersCount} />
                 </div>
             </div>
-
-            <AdminOverview introductions={introductions} usersCount={usersCount} />
         </div>
     );
 }

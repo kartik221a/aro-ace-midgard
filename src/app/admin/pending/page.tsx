@@ -12,6 +12,7 @@ import { db } from "@/lib/firebase/client";
 import { Introduction, IntroductionStatus } from "@/types"; // Ensure correct import path
 import { useAuth } from "@/lib/auth-context";
 
+import { SplitText } from "@/components/ui/reactbits/split-text";
 
 export default function AdminPendingPage() {
     const [introductions, setIntroductions] = useState<Introduction[]>([]);
@@ -53,18 +54,26 @@ export default function AdminPendingPage() {
 
     return (
         <AdminGuard>
-            <div className="container py-10 space-y-6">
-                <div className="flex items-center gap-4">
-                    <Button variant="ghost" size="icon" asChild>
-                        <Link href="/admin"><ChevronLeft className="h-4 w-4" /></Link>
-                    </Button>
-                    <h1 className="text-3xl font-bold tracking-tight">Pending Requests</h1>
+            <div className="min-h-screen pt-24 pb-20 px-4 md:px-8">
+                <div className="max-w-7xl mx-auto space-y-6">
+                    <div className="flex items-center gap-4">
+                        <Button variant="ghost" size="icon" asChild className="text-slate-400 hover:text-white hover:bg-white/10">
+                            <Link href="/admin"><ChevronLeft className="h-5 w-5" /></Link>
+                        </Button>
+                        <h1 className="text-3xl font-bold tracking-tight">
+                            <SplitText
+                                text="Pending Requests"
+                                className="text-3xl font-bold text-white inline-block"
+                                delay={0.1}
+                            />
+                        </h1>
+                    </div>
+                    <AdminIntroductionList
+                        introductions={introductions}
+                        type="pending"
+                        onUpdateStatus={handleUpdateStatus}
+                    />
                 </div>
-                <AdminIntroductionList
-                    introductions={introductions}
-                    type="pending"
-                    onUpdateStatus={handleUpdateStatus}
-                />
             </div>
         </AdminGuard>
     );
