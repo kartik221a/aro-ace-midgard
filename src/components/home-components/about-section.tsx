@@ -83,7 +83,7 @@ export default function AboutSection() {
                             colors={["#a855f7", "#d946ef", "#ec4899"]} // Purple to Fuchsia to Pink
                             animationSpeed={4}
                             showBorder={false}
-                            className="text-4xl md:text-5xl font-bold"
+                            className="text-xl md:text-5xl font-bold"
                         >
                             What is this place?
                         </GradientText>
@@ -93,13 +93,13 @@ export default function AboutSection() {
                                 text="This platform is built for people on the aromantic and asexual spectrums who want to connect on their own terms."
                                 disabled={false}
                                 speed={3}
-                                className="text-md md:text-xl leading-relaxed text-slate-300 block"
+                                className="text-[10px] md:text-xl leading-relaxed text-slate-300 block"
                             />
                             <ShinyText
                                 text="Whether you’re here for friendship, companionship, or a romantic relationship that respects your boundaries, this space is designed to support you."
                                 disabled={false}
                                 speed={3}
-                                className="text-md md:text-xl leading-relaxed text-slate-300 block"
+                                className="text-[10px] md:text-xl leading-relaxed text-slate-300 block"
                             />
                         </div>
                     </div>

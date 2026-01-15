@@ -4,10 +4,11 @@ import { useEffect, useState, useMemo } from "react";
 import { useAuth } from "@/lib/auth-context";
 import { LikesService, LikeType } from "@/lib/services/likes";
 import { MatchCard, MatchCardVariant } from "./match-card";
-import { Users, Heart, ChevronLeft, ChevronRight } from "lucide-react";
+import { Users, Heart, ChevronLeft, ChevronRight, Filter } from "lucide-react";
 import { Introduction } from "@/types";
 import { BrowseFilters, FilterState } from "@/components/browse/browse-filters";
 import { Button } from "@/components/ui/button";
+import { Sheet, SheetContent, SheetTrigger, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 
 interface MatchListProps {
     type: LikeType;
@@ -349,7 +350,32 @@ export function MatchList({ type, mode }: MatchListProps) {
         <div className="space-y-8">
             {/* Search & Filters */}
             <div className="flex flex-col md:flex-row gap-4 items-start">
-                <div className="w-full md:w-80 shrink-0">
+                {/* Mobile Filter Toggle */}
+                <div className="md:hidden w-full flex justify-center mb-4">
+                    <Sheet>
+                        <SheetTrigger asChild>
+                            <Button variant="outline" className="border-white/10 bg-white/5 text-slate-300 hover:text-white hover:bg-white/10">
+                                <Filter className="w-4 h-4 mr-2 text-purple-400" /> Filters
+                            </Button>
+                        </SheetTrigger>
+                        <SheetContent side="left" className="w-[300px] sm:w-[400px] overflow-y-auto bg-black border-r border-white/10 text-slate-200 p-0">
+                            <div className="sr-only">
+                                <SheetTitle>Filters</SheetTitle>
+                                <SheetDescription>Adjust your search criteria</SheetDescription>
+                            </div>
+                            <div className="py-2">
+                                <BrowseFilters
+                                    filters={filters}
+                                    setFilters={setFilters}
+                                    totalResults={filteredItems.length}
+                                />
+                            </div>
+                        </SheetContent>
+                    </Sheet>
+                </div>
+
+                {/* Desktop Sidebar */}
+                <div className="hidden md:block w-80 shrink-0 sticky top-24">
                     <BrowseFilters
                         filters={filters}
                         setFilters={setFilters}

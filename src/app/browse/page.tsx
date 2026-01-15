@@ -10,7 +10,7 @@ import { IntroductionCard } from "@/components/introduction-card";
 import { BrowseFilters, FilterState } from "@/components/browse/browse-filters";
 import { Button } from "@/components/ui/button";
 import { Filter, ChevronLeft, ChevronRight } from "lucide-react";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetTrigger, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 import { useAuth } from "@/lib/auth-context";
 import { LikesService, LikeType } from "@/lib/services/likes";
 import GradientText from "@/components/GradientText";
@@ -294,6 +294,10 @@ export default function BrowsePage() {
                                 </Button>
                             </SheetTrigger>
                             <SheetContent side="left" className="w-[300px] sm:w-[400px] overflow-y-auto bg-black border-r border-white/10 text-slate-200">
+                                <div className="sr-only">
+                                    <SheetTitle>Filters</SheetTitle>
+                                    <SheetDescription>Adjust your search criteria</SheetDescription>
+                                </div>
                                 <div className="py-4">
                                     <BrowseFilters
                                         filters={filters}

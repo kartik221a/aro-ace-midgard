@@ -10,6 +10,7 @@ import { cn } from "@/lib/utils";
 import { ThemeProvider } from "@/components/theme-provider";
 
 import Aurora from "@/components/ui/reactbits/aurora";
+import SplashCursor from "@/components/SplashCursor";
 
 const outfit = Outfit({
   subsets: ["latin"],
@@ -58,6 +59,16 @@ export default function RootLayout({
                 />
               </div>
             </div>
+
+            {/* Interactive Splash Cursor */}
+            <SplashCursor
+              SPLAT_RADIUS={0.25}
+              CURL={2}
+              DENSITY_DISSIPATION={3}
+              VELOCITY_DISSIPATION={1.5}
+              PRESSURE={0.15}
+              COLOR_UPDATE_SPEED={5}
+            />
 
             <div className="relative z-10 flex flex-col min-h-screen">
               <Navbar />

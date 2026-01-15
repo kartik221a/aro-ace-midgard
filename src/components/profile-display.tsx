@@ -4,7 +4,6 @@ import { ReactNode, useState } from "react";
 import { X, ChevronLeft, ChevronRight, Heart, Users } from "lucide-react";
 import { LikeType } from "@/lib/services/likes";
 import { cn } from "@/lib/utils";
-import TiltedCard from "@/components/ui/reactbits/tilted-card";
 import MagnetButton from "@/components/ui/reactbits/magnet-button";
 import SpotlightCard from "@/components/ui/reactbits/spotlight-card";
 
@@ -63,7 +62,7 @@ export function ProfileDisplay({ introduction, isOwnProfile, headerActions, topO
     };
 
     return (
-        <div className="bg-[#0f111a] min-h-screen pb-20 text-slate-200">
+        <div className="bg-[#0f111a] min-h-screen pb-10 md:pb-20 text-slate-200 overflow-x-hidden">
             {/* Lightbox Overlay */}
             {lightboxIndex !== null && (
                 <div className="fixed inset-0 z-[100] bg-black/95 backdrop-blur-xl flex items-center justify-center p-4">
@@ -112,7 +111,7 @@ export function ProfileDisplay({ introduction, isOwnProfile, headerActions, topO
                 </div>
 
                 {/* Profile Header Content */}
-                <div className="max-w-7xl mx-auto px-4 relative -mt-12 md:-mt-20 pb-8 border-b border-white/10">
+                <div className="max-w-7xl mx-auto px-3 md:px-4 relative -mt-16 md:-mt-20 pb-4 md:pb-8 border-b border-white/10">
                     <div className="flex flex-col md:flex-row items-center md:items-end gap-6 text-center md:text-left">
                         {/* Profile Pictures Pillar */}
                         <div className="flex flex-col items-center gap-4 shrink-0">
@@ -153,10 +152,10 @@ export function ProfileDisplay({ introduction, isOwnProfile, headerActions, topO
                         </div>
 
                         {/* Text Info */}
-                        <div className="flex-1 pb-2">
-                            <h1 className="text-4xl md:text-6xl font-black mb-3 tracking-tight text-white">{basicInfo?.name}</h1>
-                            <div className="flex flex-wrap items-center justify-center md:justify-start gap-x-6 gap-y-2 text-xl font-bold text-slate-400">
-                                {age && <span>{age} Years Old</span>}
+                        <div className="flex-1 pb-1 md:pb-2">
+                            <h1 className="text-2xl md:text-6xl font-black mb-1 md:mb-3 tracking-tight text-white leading-tight">{basicInfo?.name}</h1>
+                            <div className="flex flex-wrap items-center justify-center md:justify-start gap-x-3 md:gap-x-6 gap-y-0.5 md:gap-y-2 text-sm md:text-xl font-bold text-slate-400">
+                                {age && <span>{age} Years</span>}
                                 <span className="hidden md:block opacity-30">•</span>
                                 <span className="capitalize">{basicInfo?.gender?.join(", ")}</span>
                                 <span className="hidden md:block opacity-30">•</span>
@@ -170,28 +169,27 @@ export function ProfileDisplay({ introduction, isOwnProfile, headerActions, topO
                                 <>
                                     <MagnetButton
                                         className={cn(
-                                            "px-10 py-3.5 rounded-2xl flex items-center justify-center font-black transition-all shadow-2xl group",
+                                            "w-full md:w-auto px-8 md:px-10 py-3 md:py-3.5 rounded-2xl flex items-center justify-center font-black transition-all shadow-2xl group text-sm md:text-base",
                                             myLikeStatus === "friend"
                                                 ? "bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-emerald-500/20"
                                                 : "bg-white/5 border border-white/10 text-emerald-300 hover:bg-emerald-500/10 hover:border-emerald-500/30"
                                         )}
                                         onClick={() => onToggleLike?.("friend")}
                                     >
-                                        <Users className={cn("w-6 h-6 mr-3 transition-transform group-hover:scale-110", myLikeStatus === "friend" && "fill-current")} />
-                                        {matchStatus === "friend" ? "You are Friends" : (myLikeStatus === "friend" ? "Friend Request Sent" : "Like as Friend")}
+                                        <Users className={cn("w-5 h-5 md:w-6 md:h-6 mr-3 transition-transform group-hover:scale-110", myLikeStatus === "friend" && "fill-current")} />
+                                        {matchStatus === "friend" ? "Friends" : (myLikeStatus === "friend" ? "Request Sent" : "Like as Friend")}
                                     </MagnetButton>
-
                                     <MagnetButton
                                         className={cn(
-                                            "px-10 py-3.5 rounded-2xl flex items-center justify-center font-black transition-all shadow-2xl group",
+                                            "w-full md:w-auto px-8 md:px-10 py-3 md:py-3.5 rounded-2xl flex items-center justify-center font-black transition-all shadow-2xl group text-sm md:text-base",
                                             myLikeStatus === "relationship"
                                                 ? "bg-gradient-to-r from-rose-500 to-pink-600 text-white shadow-rose-500/20"
                                                 : "bg-white/5 border border-white/10 text-rose-300 hover:bg-rose-500/10 hover:border-rose-500/30"
                                         )}
                                         onClick={() => onToggleLike?.("relationship")}
                                     >
-                                        <Heart className={cn("w-6 h-6 mr-3 transition-transform group-hover:scale-110", myLikeStatus === "relationship" && "fill-current")} />
-                                        {matchStatus === "relationship" ? "You are Partners" : (myLikeStatus === "relationship" ? "Partner Request Sent" : "Like as Partner")}
+                                        <Heart className={cn("w-5 h-5 md:w-6 md:h-6 mr-3 transition-transform group-hover:scale-110", myLikeStatus === "relationship" && "fill-current")} />
+                                        {matchStatus === "relationship" ? "Partners" : (myLikeStatus === "relationship" ? "Request Sent" : "Like as Partner")}
                                     </MagnetButton>
                                 </>
                             )}
@@ -201,19 +199,19 @@ export function ProfileDisplay({ introduction, isOwnProfile, headerActions, topO
             </div>
 
             {/* Main Content Body */}
-            <div className="max-w-7xl mx-auto px-4 mt-12 grid grid-cols-1 lg:grid-cols-12 gap-16">
+            <div className="max-w-7xl mx-auto px-3 md:px-4 mt-6 md:mt-12 grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-16">
 
                 {/* Left Column (Wide) - Bios */}
-                <div className="lg:col-span-7 space-y-16">
+                <div className="lg:col-span-7 space-y-10 md:space-y-16">
                     {longDescription && longDescription.length > 0 ? (
                         longDescription.map((section) => (
                             <div key={section.id} className="group">
-                                <h2 className="text-3xl font-black mb-8 flex items-center gap-5 text-white">
-                                    <span className="w-2.5 h-10 bg-purple-600 rounded-full group-hover:h-12 transition-all" />
+                                <h2 className="text-xl md:text-3xl font-black mb-3 md:mb-8 flex items-center gap-3 md:gap-5 text-white">
+                                    <span className="w-1.5 h-6 md:w-2.5 md:h-10 bg-purple-600 rounded-full group-hover:h-8 md:group-hover:h-12 transition-all" />
                                     {section.title}
                                 </h2>
-                                <div className="bg-white/[0.03] backdrop-blur-md border border-white/10 rounded-[2rem] p-8 md:p-12 shadow-2xl shadow-indigo-500/5 hover:border-white/20 transition-colors">
-                                    <p className="text-xl text-slate-300 leading-relaxed whitespace-pre-wrap font-medium">
+                                <div className="bg-white/[0.03] backdrop-blur-md border border-white/10 rounded-xl md:rounded-[2rem] p-5 md:p-12 shadow-2xl shadow-indigo-500/5 hover:border-white/20 transition-colors">
+                                    <p className="text-base md:text-xl text-slate-300 leading-relaxed whitespace-pre-wrap font-medium">
                                         {section.content}
                                     </p>
                                 </div>
@@ -227,14 +225,14 @@ export function ProfileDisplay({ introduction, isOwnProfile, headerActions, topO
                 </div>
 
                 {/* Right Column (Narrow) - Details */}
-                <div className="lg:col-span-5 space-y-12">
+                <div className="lg:col-span-5 space-y-8 md:space-y-12">
 
                     {/* 1. Identity Snapshot Card */}
-                    <SpotlightCard className="bg-white/5 backdrop-blur-md rounded-[2rem] border border-white/10 overflow-hidden shadow-2xl" spotlightColor="rgba(139, 92, 246, 0.15)">
-                        <div className="bg-gradient-to-r from-purple-600/30 via-indigo-600/20 to-transparent p-8 border-b border-white/10">
-                            <h3 className="font-black text-purple-100 uppercase tracking-[0.4em] text-xs text-center">Identity Snapshot</h3>
+                    <SpotlightCard className="bg-white/5 backdrop-blur-md rounded-2xl md:rounded-[2rem] border border-white/10 overflow-hidden shadow-2xl" spotlightColor="rgba(139, 92, 246, 0.15)">
+                        <div className="bg-gradient-to-r from-purple-600/30 via-indigo-600/20 to-transparent p-4 md:p-8 border-b border-white/10">
+                            <h3 className="font-black text-purple-100 uppercase tracking-[0.2em] md:tracking-[0.4em] text-[9px] md:text-xs text-center">Identity Snapshot</h3>
                         </div>
-                        <div className="p-5 space-y-2">
+                        <div className="p-2 md:p-5 space-y-0.5 md:space-y-2">
                             <DetailRow label="Pronouns" value={identity?.pronouns} />
                             <DetailRow label="Ethnicity" value={identity?.ethnicity?.join(", ")} />
                             <DetailRow label="Sexual Orientation" value={identity?.sexualOrientation} />
@@ -247,7 +245,7 @@ export function ProfileDisplay({ introduction, isOwnProfile, headerActions, topO
                     </SpotlightCard>
 
                     {/* 2. Looking For Segmented Sections */}
-                    <div className="space-y-10">
+                    <div className="space-y-6 md:space-y-10">
                         <div className="flex items-center gap-6">
                             <span className="h-px bg-gradient-to-r from-transparent to-white/10 flex-1" />
                             <span className="text-[10px] font-black text-slate-500 uppercase tracking-[0.5em] whitespace-nowrap">Intent & Preferences</span>
@@ -263,17 +261,17 @@ export function ProfileDisplay({ introduction, isOwnProfile, headerActions, topO
 
                         {/* Relationship Section */}
                         {(lookingFor?.intent === "relationship" || lookingFor?.intent === "both") && (
-                            <div className="space-y-8">
+                            <div className="space-y-6 md:space-y-8">
                                 <SpotlightCard
                                     className={cn(
-                                        "rounded-[2rem] border p-8 shadow-2xl transition-transform hover:scale-[1.01]",
+                                        "rounded-2xl md:rounded-[2rem] border p-6 md:p-8 shadow-2xl transition-transform hover:scale-[1.01]",
                                         lookingFor?.intent === "relationship" ? "bg-rose-500/[0.08] border-rose-500/30" : "bg-white/5 border-white/10"
                                     )}
                                     spotlightColor="rgba(244, 63, 94, 0.2)"
                                 >
-                                    <h4 className="text-2xl font-black text-rose-300 mb-8 flex items-center gap-4">
-                                        <Heart className="w-8 h-8 fill-current" />
-                                        ME IF IN RELATIONSHIP
+                                    <h4 className="text-lg md:text-2xl font-black text-rose-300 mb-4 md:mb-8 flex items-center gap-2 md:gap-4">
+                                        <Heart className="w-5 h-5 md:w-8 md:h-8 fill-current" />
+                                        ME IN RELATIONSHIP
                                     </h4>
                                     <div className="grid grid-cols-2 gap-x-4 gap-y-6">
                                         <StatRow label="Desire for Sex" value={lookingFor?.personal?.sexDesire} />
@@ -290,13 +288,13 @@ export function ProfileDisplay({ introduction, isOwnProfile, headerActions, topO
 
                                 <SpotlightCard
                                     className={cn(
-                                        "rounded-[2rem] border p-8 shadow-2xl transition-transform hover:scale-[1.01]",
+                                        "rounded-2xl md:rounded-[2rem] border p-6 md:p-8 shadow-2xl transition-transform hover:scale-[1.01]",
                                         lookingFor?.intent === "relationship" ? "bg-rose-500/[0.08] border-rose-500/30" : "bg-white/5 border-white/10"
                                     )}
                                     spotlightColor="rgba(244, 63, 94, 0.2)"
                                 >
-                                    <h4 className="text-2xl font-black text-rose-300 mb-8 flex items-center gap-4">
-                                        <Heart className="w-8 h-8" />
+                                    <h4 className="text-lg md:text-2xl font-black text-rose-300 mb-4 md:mb-8 flex items-center gap-2 md:gap-4">
+                                        <Heart className="w-5 h-5 md:w-8 md:h-8" />
                                         PARTNER PREFERENCE
                                     </h4>
                                     <div className="space-y-6">
@@ -319,10 +317,10 @@ export function ProfileDisplay({ introduction, isOwnProfile, headerActions, topO
 
                         {/* Friends Section */}
                         {(lookingFor?.intent === "friends" || lookingFor?.intent === "both") && (
-                            <SpotlightCard className="bg-emerald-500/[0.08] rounded-[2rem] border border-emerald-500/20 p-8 shadow-2xl transition-transform hover:scale-[1.01]" spotlightColor="rgba(16, 185, 129, 0.2)">
-                                <h4 className="text-2xl font-black text-emerald-300 mb-8 flex items-center gap-4">
-                                    <Users className="w-8 h-8 fill-current" />
-                                    FRIENDSHIP PREFERENCES
+                            <SpotlightCard className="bg-emerald-500/[0.08] rounded-2xl md:rounded-[2rem] border border-emerald-500/20 p-6 md:p-8 shadow-2xl transition-transform hover:scale-[1.01]" spotlightColor="rgba(16, 185, 129, 0.2)">
+                                <h4 className="text-lg md:text-2xl font-black text-emerald-300 mb-4 md:mb-8 flex items-center gap-2 md:gap-4">
+                                    <Users className="w-5 h-5 md:w-8 md:h-8 fill-current" />
+                                    FRIENDSHIP PREFS
                                 </h4>
                                 <div className="space-y-6">
                                     <StatRow label="Age Range" value={lookingFor?.friends?.ageRange ? `${lookingFor.friends.ageRange[0]} - ${lookingFor.friends.ageRange[1]}` : undefined} />
@@ -333,14 +331,14 @@ export function ProfileDisplay({ introduction, isOwnProfile, headerActions, topO
                     </div>
 
                     {/* 3. Lifestyle Details Card */}
-                    <SpotlightCard className="bg-white/5 backdrop-blur-md rounded-[2rem] border border-white/10 overflow-hidden shadow-2xl" spotlightColor="rgba(59, 130, 246, 0.15)">
-                        <div className="bg-gradient-to-r from-indigo-600/30 via-purple-600/10 to-transparent p-7 border-b border-white/10">
-                            <h3 className="text-xl font-black text-white flex items-center gap-4">
-                                <span className="w-1.5 h-6 bg-indigo-500 rounded-full shadow-[0_0_15px_rgba(99,102,241,0.5)]" />
+                    <SpotlightCard className="bg-white/5 backdrop-blur-md rounded-2xl md:rounded-[2rem] border border-white/10 overflow-hidden shadow-2xl" spotlightColor="rgba(59, 130, 246, 0.15)">
+                        <div className="bg-gradient-to-r from-indigo-600/30 via-purple-600/10 to-transparent p-5 md:p-7 border-b border-white/10">
+                            <h3 className="text-lg md:text-xl font-black text-white flex items-center gap-3 md:gap-4">
+                                <span className="w-1 md:w-1.5 h-5 md:h-6 bg-indigo-500 rounded-full shadow-[0_0_15px_rgba(99,102,241,0.5)]" />
                                 Lifestyle
                             </h3>
                         </div>
-                        <div className="p-5 space-y-1">
+                        <div className="p-3 md:p-5 space-y-1">
                             <DetailRow label="Education" value={lifestyle?.education} />
                             <DetailRow label="Occupation" value={lifestyle?.occupation} />
                             <DetailRow label="Alcohol" value={lifestyle?.alcohol} />
@@ -353,9 +351,9 @@ export function ProfileDisplay({ introduction, isOwnProfile, headerActions, topO
                         </div>
 
                         {lifestyle?.interests && (
-                            <div className="mt-10 pt-8 border-t border-white/10">
-                                <h4 className="text-xs font-black text-slate-500 uppercase tracking-[0.2em] mb-4">Interests</h4>
-                                <p className="text-slate-300 font-medium leading-relaxed whitespace-pre-wrap">
+                            <div className="mt-4 md:mt-10 pt-4 md:pt-8 border-t border-white/10 p-4 md:p-0">
+                                <h4 className="text-[9px] md:text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-2 md:mb-4">Interests</h4>
+                                <p className="text-sm md:text-lg text-slate-300 font-medium leading-relaxed whitespace-pre-wrap">
                                     {lifestyle.interests}
                                 </p>
                             </div>
@@ -372,9 +370,9 @@ export function ProfileDisplay({ introduction, isOwnProfile, headerActions, topO
 function DetailRow({ label, value }: { label: string; value?: string | number }) {
     if (!value || value === "") return null;
     return (
-        <div className="flex justify-between items-center p-4 hover:bg-white/[0.07] transition-all rounded-2xl group/row">
-            <span className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] group-hover/row:text-slate-400 transition-colors shrink-0 mr-8">{label}</span>
-            <span className="font-black text-slate-100 text-right leading-tight text-base">{value}</span>
+        <div className="flex justify-between items-center p-2 md:p-4 hover:bg-white/[0.07] transition-all rounded-lg md:rounded-2xl group/row">
+            <span className="text-[9px] md:text-[10px] font-black text-slate-500 uppercase tracking-[0.1em] md:tracking-[0.2em] group-hover/row:text-slate-400 transition-colors shrink mr-2 md:mr-8 whitespace-nowrap overflow-hidden text-ellipsis">{label}</span>
+            <span className="font-black text-slate-100 text-right leading-tight text-xs md:text-base ml-2">{value}</span>
         </div>
     );
 }
@@ -382,9 +380,9 @@ function DetailRow({ label, value }: { label: string; value?: string | number })
 function StatRow({ label, value }: { label: string; value?: string | number }) {
     if (!value || value === "" || value === "Any") return null;
     return (
-        <div className="flex flex-col gap-2.5 p-1">
-            <span className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">{label}</span>
-            <span className="font-black text-slate-100 capitalize text-base leading-tight">{value}</span>
+        <div className="flex flex-col gap-1 md:gap-2.5 p-1">
+            <span className="text-[9px] md:text-[10px] font-black text-slate-500 uppercase tracking-[0.15em] md:tracking-[0.2em]">{label}</span>
+            <span className="font-black text-slate-100 capitalize text-sm md:text-base leading-tight">{value}</span>
         </div>
     );
 }

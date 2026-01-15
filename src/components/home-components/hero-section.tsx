@@ -11,7 +11,7 @@ export default function HeroSection() {
     const { user } = useAuth();
 
     return (
-        <section className="relative w-full h-[80vh] flex flex-col items-center justify-center overflow-hidden">
+        <section className="relative w-full h-[80vh] flex flex-col items-center justify-center pt-24 md:pt-0 overflow-hidden">
             {/* Background Orb */}
             <div className="absolute inset-0 z-0">
                 <Orb
