@@ -144,9 +144,9 @@ export function PhasedIntroductionForm({ initialData, onSuccess }: PhasedIntrodu
                     <button
                         key={phase}
                         onClick={() => setActivePhase(idx)}
-                        className={`text-left px-4 py-3 rounded-lg text-sm font-medium transition-colors ${activePhase === idx
-                            ? "bg-rose-50 text-rose-900 border-l-4 border-rose-500"
-                            : "hover:bg-slate-50 text-slate-600"
+                        className={`text-left px-4 py-3 rounded-lg text-sm font-medium transition-all ${activePhase === idx
+                            ? "bg-purple-500/10 text-purple-300 border-l-4 border-purple-500 shadow-[0_0_15px_rgba(168,85,247,0.1)]"
+                            : "hover:bg-white/5 text-slate-400 hover:text-slate-200"
                             }`}
                     >
                         {idx + 1}. {phase}
@@ -154,10 +154,10 @@ export function PhasedIntroductionForm({ initialData, onSuccess }: PhasedIntrodu
                 ))}
 
                 <div className="mt-8 flex flex-col gap-2">
-                    <Button variant="outline" onClick={() => handleSave(true)} disabled={saving}>
+                    <Button variant="outline" onClick={() => handleSave(true)} disabled={saving} className="border-purple-500/30 text-purple-300 hover:bg-purple-500/10 hover:text-purple-200 bg-transparent">
                         {saving ? "Saving..." : "Save Draft"}
                     </Button>
-                    <Button onClick={() => handleSave(false)} disabled={saving} className="bg-rose-500 hover:bg-rose-600">
+                    <Button onClick={() => handleSave(false)} disabled={saving} className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold shadow-lg shadow-purple-500/20 border-none px-6">
                         {saving ? "Submitting..." : (userData?.role === "admin" ? "Publish (Admin)" : "Submit for Review")}
                     </Button>
                 </div>
@@ -165,9 +165,9 @@ export function PhasedIntroductionForm({ initialData, onSuccess }: PhasedIntrodu
 
             {/* Main Content Area */}
             <div className="flex-1 min-w-0">
-                <Card>
+                <Card className="bg-white/5 border-white/10 backdrop-blur-md">
                     <CardContent className="p-6">
-                        <h2 className="text-2xl font-bold mb-6">{PHASES[activePhase]}</h2>
+                        <h2 className="text-2xl font-bold mb-6 text-white">{PHASES[activePhase]}</h2>
 
                         {/* PHASE 1: IMAGES */}
                         {activePhase === 0 && (
@@ -328,8 +328,8 @@ export function PhasedIntroductionForm({ initialData, onSuccess }: PhasedIntrodu
                                 {(data.lookingFor?.intent === "relationship" || data.lookingFor?.intent === "both") && (
                                     <>
                                         {/* ME IF IN RELATIONSHIP */}
-                                        <div className="space-y-4 border-t pt-6">
-                                            <h3 className="text-xl font-bold text-rose-600 bg-rose-50 p-2 inline-block rounded-md">ME IF IN RELATIONSHIP</h3>
+                                        <div className="space-y-4 border-t border-white/10 pt-6">
+                                            <h3 className="text-xl font-bold text-purple-300 bg-purple-500/10 p-2 px-4 inline-block rounded-md border border-purple-500/20">ME IF IN RELATIONSHIP</h3>
                                             <div className="grid md:grid-cols-2 gap-6">
                                                 <div><Label>Desire for Sex</Label><Select value={data.lookingFor?.personal?.sexDesire} onValueChange={(v) => setData(prev => ({ ...prev, lookingFor: { ...prev.lookingFor!, personal: { ...prev.lookingFor!.personal, sexDesire: v } } }))}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent>{C.DESIRE_OPTIONS.map(o => <SelectItem key={o} value={o}>{o}</SelectItem>)}</SelectContent></Select></div>
                                                 <div><Label>Desire for Romance</Label><Select value={data.lookingFor?.personal?.romanceDesire} onValueChange={(v) => setData(prev => ({ ...prev, lookingFor: { ...prev.lookingFor!, personal: { ...prev.lookingFor!.personal, romanceDesire: v } } }))}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent>{C.DESIRE_OPTIONS.map(o => <SelectItem key={o} value={o}>{o}</SelectItem>)}</SelectContent></Select></div>
@@ -342,8 +342,8 @@ export function PhasedIntroductionForm({ initialData, onSuccess }: PhasedIntrodu
                                         </div>
 
                                         {/* MY PREFERENCE FOR A PARTNER */}
-                                        <div className="space-y-4 border-t pt-6">
-                                            <h3 className="text-xl font-bold text-rose-600 bg-rose-50 p-2 inline-block rounded-md">MY PREFERENCE FOR A PARTNER</h3>
+                                        <div className="space-y-4 border-t border-white/10 pt-6">
+                                            <h3 className="text-xl font-bold text-indigo-300 bg-indigo-500/10 p-2 px-4 inline-block rounded-md border border-indigo-500/20">MY PREFERENCE FOR A PARTNER</h3>
                                             <div className="space-y-6">
                                                 <div>
                                                     <Label>Age Range ({data.lookingFor?.partner?.ageRange?.[0] || 18} - {data.lookingFor?.partner?.ageRange?.[1] || 60})</Label>
@@ -385,7 +385,7 @@ export function PhasedIntroductionForm({ initialData, onSuccess }: PhasedIntrodu
                                                 </div>
                                             </div>
 
-                                            <div className="flex flex-col gap-4 mt-4 p-4 bg-slate-50 rounded-lg">
+                                            <div className="flex flex-col gap-4 mt-4 p-4 bg-white/5 border border-white/10 rounded-lg">
                                                 <div className="flex items-center justify-between">
                                                     <Label htmlFor="hasKids" className="text-base">I already have children</Label>
                                                     <Switch id="hasKids" checked={data.lookingFor?.toggles?.hasKids} onCheckedChange={(c) => setData(prev => ({ ...prev, lookingFor: { ...prev.lookingFor!, toggles: { ...prev.lookingFor!.toggles!, hasKids: c } } }))} />
@@ -400,8 +400,8 @@ export function PhasedIntroductionForm({ initialData, onSuccess }: PhasedIntrodu
                                 )}
 
                                 {(data.lookingFor?.intent === "friends" || data.lookingFor?.intent === "both") && (
-                                    <div className="space-y-4 border-t pt-6">
-                                        <h3 className="text-xl font-bold text-rose-600 bg-rose-50 p-2 inline-block rounded-md">FRIENDSHIP PREFERENCES</h3>
+                                    <div className="space-y-4 border-t border-white/10 pt-6">
+                                        <h3 className="text-xl font-bold text-emerald-300 bg-emerald-500/10 p-2 px-4 inline-block rounded-md border border-emerald-500/20">FRIENDSHIP PREFERENCES</h3>
                                         <div>
                                             <Label>Age Range ({data.lookingFor?.friends?.ageRange?.[0] || 18} - {data.lookingFor?.friends?.ageRange?.[1] || 60})</Label>
                                             <Slider
@@ -448,8 +448,8 @@ export function PhasedIntroductionForm({ initialData, onSuccess }: PhasedIntrodu
                             <div className="space-y-8">
                                 <div className="flex justify-between items-center">
                                     <div>
-                                        <h3 className="text-xl font-bold text-slate-900">Long Description</h3>
-                                        <p className="text-sm text-muted-foreground">Add as many sections as you like to introduce yourself.</p>
+                                        <h3 className="text-xl font-bold text-slate-100">Long Description</h3>
+                                        <p className="text-sm text-slate-400">Add as many sections as you like to introduce yourself.</p>
                                     </div>
                                     <Button
                                         variant="outline"
@@ -467,7 +467,7 @@ export function PhasedIntroductionForm({ initialData, onSuccess }: PhasedIntrodu
 
                                 <div className="space-y-6">
                                     {data.longDescription?.map((section, index) => (
-                                        <div key={section.id} className="relative group border p-4 rounded-xl bg-slate-50">
+                                        <div key={section.id} className="relative group border border-white/10 p-4 rounded-xl bg-white/5">
                                             <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
                                                 <Button
                                                     size="icon"
@@ -501,7 +501,7 @@ export function PhasedIntroductionForm({ initialData, onSuccess }: PhasedIntrodu
                                                             longDescription: prev.longDescription?.map(s => s.id === section.id ? { ...s, content: e.target.value } : s)
                                                         }))}
                                                         placeholder="Write something about this topic..."
-                                                        className="h-32 bg-white"
+                                                        className="h-32 bg-white/5 border-white/10 text-white placeholder:text-slate-500"
                                                     />
                                                 </div>
                                             </div>

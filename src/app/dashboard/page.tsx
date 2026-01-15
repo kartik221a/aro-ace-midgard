@@ -12,10 +12,12 @@ import { ProfileDisplay } from "@/components/profile-display";
 import { Edit2, Users, Heart } from "lucide-react";
 import Link from "next/link";
 import { useMatchmakingCounts } from "@/hooks/use-matchmaking-counts";
-import SpotlightCard from "@/components/ui/reactbits/spotlight-card";
+import MagicBento from "@/components/ui/reactbits/MagicBento";
 import MagnetButton from "@/components/ui/reactbits/magnet-button";
-import { SplitText } from "@/components/ui/reactbits/split-text";
+import GradientText from "@/components/GradientText";
 import { motion } from "framer-motion";
+import SpotlightCard from "@/components/ui/reactbits/spotlight-card";
+import { cn } from "@/lib/utils";
 
 export default function DashboardPage() {
     const { user, loading } = useAuth();
@@ -61,8 +63,8 @@ export default function DashboardPage() {
         return (
             <div className="min-h-screen flex items-center justify-center">
                 <div className="flex flex-col items-center gap-4">
-                    <div className="w-12 h-12 border-4 border-[#6fcf97]/30 border-t-[#6fcf97] rounded-full animate-spin" />
-                    <div className="text-[#a0c4ff] font-medium animate-pulse">Loading your space...</div>
+                    <div className="w-12 h-12 border-4 border-purple-500/30 border-t-pink-500 rounded-full animate-spin" />
+                    <div className="text-purple-300 font-medium animate-pulse">Loading your space...</div>
                 </div>
             </div>
         );
@@ -84,7 +86,7 @@ export default function DashboardPage() {
                                 {introduction ? "Edit Your Introduction" : "Create Your Introduction"}
                             </h2>
                             {introduction && (
-                                <Button variant="ghost" onClick={() => setIsEditing(false)} className="hover:bg-white/10 text-slate-300 hover:text-white">Cancel</Button>
+                                <Button variant="ghost" onClick={() => setIsEditing(false)} className="hover:bg-purple-500/10 text-slate-400 hover:text-purple-300 border border-transparent hover:border-purple-500/20 transition-all">Cancel</Button>
                             )}
                         </div>
                         <div className="glass p-6 rounded-2xl">
@@ -97,128 +99,110 @@ export default function DashboardPage() {
                 ) : (
                     <div className="space-y-12">
                         {/* Header */}
-                        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                            <div>
-                                <h1 className="text-4xl font-bold mb-2">
-                                    <SplitText
-                                        text="Dashboard"
-                                        className="text-4xl font-bold text-white inline-block"
-                                        delay={0.1}
-                                    />
-                                </h1>
-                                <p className="text-slate-400">Manage your profile and connections from here.</p>
+                        <div className="flex flex-col items-center text-center gap-4">
+                            <div className="w-full">
+                                <GradientText
+                                    colors={["#a855f7", "#d946ef", "#ec4899"]} // Purple to Fuchsia to Pink
+                                    animationSpeed={3}
+                                    showBorder={false}
+                                    className="text-4xl md:text-5xl font-bold tracking-tight"
+                                >
+                                    Dashboard
+                                </GradientText>
+                                <p className="text-slate-400 mt-4 text-lg">Manage your profile and connections from here.</p>
                             </div>
                         </div>
 
-                        {/* Bento Grid Stats */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 auto-rows-[160px]">
-                            {/* Friend Requests - Large Tile */}
-                            <Link href="/dashboard/friend-requests" className="col-span-1 lg:col-span-2 row-span-1 group">
-                                <SpotlightCard className="h-full bg-indigo-500/5 border border-indigo-500/10 rounded-3xl p-6 hover:bg-indigo-500/10 transition-all duration-500 group-hover:border-indigo-500/30" spotlightColor="rgba(99, 102, 241, 0.2)">
-                                    <div className="h-full flex flex-row items-center justify-between">
-                                        <div className="flex flex-col justify-center h-full">
-                                            <div className="p-3 w-fit bg-indigo-500/20 rounded-2xl text-indigo-300 mb-3 group-hover:scale-110 transition-transform duration-300">
-                                                <Users className="w-6 h-6" />
-                                            </div>
-                                            <div className="font-bold text-xl text-slate-100">Friend Requests</div>
-                                            <div className="text-sm text-slate-400">Expand your circle</div>
-                                        </div>
-                                        <div className="flex items-center justify-center">
-                                            {counts.friendRequests > 0 ? (
-                                                <div className="h-16 w-16 bg-gradient-to-br from-indigo-500 to-violet-600 rounded-2xl flex items-center justify-center text-2xl font-bold text-white shadow-lg shadow-indigo-500/30 animate-pulse">
+                        {/* Magic Bento Stats */}
+                        <div className="w-full">
+                            <MagicBento
+                                spotlightRadius={800}
+                                enableBorderGlow={true}
+                                particleCount={100}
+                                glowColor="207, 158, 255"
+                                enableTilt={true}
+                                clickEffect={true}
+                                enableMagnetism={true}
+                                cards={[
+                                    {
+                                        label: (
+                                            <span className="flex items-center gap-1.5">
+                                                <Users className="w-3.5 h-3.5" />
+                                                <span className={cn("font-bold text-white px-1.5 py-0.5 rounded-md", counts.friendRequests > 0 ? "bg-sky-500/40" : "bg-white/10")}>
                                                     {counts.friendRequests}
-                                                </div>
-                                            ) : (
-                                                <div className="h-16 w-16 bg-white/5 rounded-2xl flex items-center justify-center text-2xl font-bold text-slate-500 border border-white/5">
-                                                    0
-                                                </div>
-                                            )}
-                                        </div>
-                                    </div>
-                                </SpotlightCard>
-                            </Link>
-
-                            {/* Partner Requests - Large Tile */}
-                            <Link href="/dashboard/partner-requests" className="col-span-1 lg:col-span-2 row-span-1 group">
-                                <SpotlightCard className="h-full bg-pink-500/5 border border-pink-500/10 rounded-3xl p-6 hover:bg-pink-500/10 transition-all duration-500 group-hover:border-pink-500/30" spotlightColor="rgba(236, 72, 153, 0.2)">
-                                    <div className="h-full flex flex-row items-center justify-between">
-                                        <div className="flex flex-col justify-center h-full">
-                                            <div className="p-3 w-fit bg-pink-500/20 rounded-2xl text-pink-300 mb-3 group-hover:scale-110 transition-transform duration-300">
-                                                <Heart className="w-6 h-6" />
-                                            </div>
-                                            <div className="font-bold text-xl text-slate-100">Partner Requests</div>
-                                            <div className="text-sm text-slate-400">Connect deeper</div>
-                                        </div>
-                                        <div className="flex items-center justify-center">
-                                            {counts.partnerRequests > 0 ? (
-                                                <div className="h-16 w-16 bg-gradient-to-br from-pink-500 to-rose-500 rounded-2xl flex items-center justify-center text-2xl font-bold text-white shadow-lg shadow-pink-500/30 animate-pulse">
+                                                </span>
+                                                New
+                                            </span>
+                                        ),
+                                        title: <div className="flex items-center gap-2">Friend Requests</div>,
+                                        description: "Expand your circle and find like-minded souls.",
+                                        onClick: () => router.push("/dashboard/friend-requests"),
+                                        className: counts.friendRequests > 0 ? "border-sky-500/50 bg-sky-500/10" : "",
+                                        themeColor: "14, 165, 233" // Sky Blue
+                                    },
+                                    {
+                                        label: (
+                                            <span className="flex items-center gap-1.5">
+                                                <Heart className="w-3.5 h-3.5" />
+                                                <span className={cn("font-bold text-white px-1.5 py-0.5 rounded-md", counts.partnerRequests > 0 ? "bg-rose-500/40" : "bg-white/10")}>
                                                     {counts.partnerRequests}
-                                                </div>
-                                            ) : (
-                                                <div className="h-16 w-16 bg-white/5 rounded-2xl flex items-center justify-center text-2xl font-bold text-slate-500 border border-white/5">
-                                                    0
-                                                </div>
-                                            )}
-                                        </div>
-                                    </div>
-                                </SpotlightCard>
-                            </Link>
-
-                            {/* Friend Matches - Small Tile */}
-                            <Link href="/dashboard/friend-matches" className="col-span-1 group">
-                                <SpotlightCard className="h-full bg-teal-500/5 border border-teal-500/10 rounded-3xl p-5 hover:bg-teal-500/10 transition-all duration-500" spotlightColor="rgba(20, 184, 166, 0.2)">
-                                    <div className="h-full flex flex-col justify-between">
-                                        <div className="flex justify-between items-start">
-                                            <div className="p-2 bg-teal-500/20 rounded-xl text-teal-300">
-                                                <Users className="w-5 h-5" />
-                                            </div>
-                                            <span className="text-2xl font-bold text-white">{counts.friendMatches}</span>
-                                        </div>
-                                        <div>
-                                            <div className="font-semibold text-slate-200">Friends</div>
-                                            <div className="text-xs text-slate-500">Matches</div>
-                                        </div>
-                                    </div>
-                                </SpotlightCard>
-                            </Link>
-
-                            {/* Partner Matches - Small Tile */}
-                            <Link href="/dashboard/partner-matches" className="col-span-1 group">
-                                <SpotlightCard className="h-full bg-rose-500/5 border border-rose-500/10 rounded-3xl p-5 hover:bg-rose-500/10 transition-all duration-500" spotlightColor="rgba(244, 63, 94, 0.2)">
-                                    <div className="h-full flex flex-col justify-between">
-                                        <div className="flex justify-between items-start">
-                                            <div className="p-2 bg-rose-500/20 rounded-xl text-rose-300">
-                                                <Heart className="w-5 h-5" />
-                                            </div>
-                                            <span className="text-2xl font-bold text-white">{counts.partnerMatches}</span>
-                                        </div>
-                                        <div>
-                                            <div className="font-semibold text-slate-200">Partners</div>
-                                            <div className="text-xs text-slate-500">Matches</div>
-                                        </div>
-                                    </div>
-                                </SpotlightCard>
-                            </Link>
-
-                            {/* Sent Requests - Wide Tile */}
-                            <Link href="/dashboard/sent-requests" className="col-span-1 lg:col-span-2 group">
-                                <SpotlightCard className="h-full bg-white/5 border border-white/10 rounded-3xl p-5 hover:bg-white/10 transition-all duration-500" spotlightColor="rgba(255, 255, 255, 0.1)">
-                                    <div className="h-full flex items-center justify-between px-2">
-                                        <div className="flex items-center gap-4">
-                                            <div className="p-3 bg-white/10 rounded-full group-hover:rotate-12 transition-transform duration-300">
-                                                <Users className="w-5 h-5 text-slate-300" />
-                                            </div>
-                                            <div>
-                                                <div className="font-bold text-slate-200">Sent Requests</div>
-                                                <div className="text-xs text-slate-500">Waiting for response</div>
-                                            </div>
-                                        </div>
-                                        <div className="px-4 py-2 rounded-full bg-white/5 border border-white/10 font-mono text-slate-300">
-                                            {counts.sentRequests} Pending
-                                        </div>
-                                    </div>
-                                </SpotlightCard>
-                            </Link>
+                                                </span>
+                                                New
+                                            </span>
+                                        ),
+                                        title: <div className="flex items-center gap-2">Partner Requests</div>,
+                                        description: "Connect deeper with potential life partners.",
+                                        onClick: () => router.push("/dashboard/partner-requests"),
+                                        className: counts.partnerRequests > 0 ? "border-rose-500/50 bg-rose-500/10" : "",
+                                        themeColor: "244, 63, 94" // Light Red / Rose
+                                    },
+                                    {
+                                        label: (
+                                            <span className="flex items-center gap-1.5">
+                                                <Users className="w-3.5 h-3.5" />
+                                                <span className="font-bold text-white px-1.5 py-0.5 rounded-md bg-white/10">
+                                                    {counts.friendMatches}
+                                                </span>
+                                                Total
+                                            </span>
+                                        ),
+                                        title: "Friends",
+                                        description: "Your mutual friend connections.",
+                                        onClick: () => router.push("/dashboard/friend-matches"),
+                                        themeColor: "59, 130, 246" // Blue
+                                    },
+                                    {
+                                        label: (
+                                            <span className="flex items-center gap-1.5">
+                                                <Heart className="w-3.5 h-3.5" />
+                                                <span className="font-bold text-white px-1.5 py-0.5 rounded-md bg-white/10">
+                                                    {counts.partnerMatches}
+                                                </span>
+                                                Total
+                                            </span>
+                                        ),
+                                        title: "Partners",
+                                        description: "Your mutual partner connections.",
+                                        onClick: () => router.push("/dashboard/partner-matches"),
+                                        themeColor: "239, 68, 68" // Red
+                                    },
+                                    {
+                                        label: (
+                                            <span className="flex items-center gap-1.5">
+                                                <Users className="w-3.5 h-3.5 opacity-50" />
+                                                <span className="font-bold text-white px-1.5 py-0.5 rounded-md bg-white/10">
+                                                    {counts.sentRequests}
+                                                </span>
+                                                Sent
+                                            </span>
+                                        ),
+                                        title: "Requests Sent",
+                                        description: "Tracks your outgoing connection attempts.",
+                                        onClick: () => router.push("/dashboard/sent-requests"),
+                                        themeColor: "251, 191, 36" // Yellow / Amber
+                                    }
+                                ]}
+                            />
                         </div>
 
 

@@ -16,7 +16,6 @@ import { useAuth } from "@/lib/auth-context";
 import { GradientText } from "@/components/ui/gradient-text";
 import Aurora from "@/components/ui/reactbits/aurora";
 import SpotlightCard from "@/components/ui/reactbits/spotlight-card";
-import { SplitText } from "@/components/ui/reactbits/split-text";
 import MagnetButton from "@/components/ui/reactbits/magnet-button";
 import { motion } from "framer-motion";
 
@@ -96,30 +95,21 @@ export default function LoginPage() {
     };
 
     return (
-        <div className="relative min-h-screen flex items-center justify-center px-4 overflow-hidden bg-[#0f111a] text-white">
+        <div className="relative min-h-screen flex items-center justify-center px-4 overflow-hidden bg-black text-white">
             {/* ReactBits component: Aurora */}
             <div className="absolute inset-0 opacity-60">
                 <Aurora
-                    colorStops={['#6fcf97', '#a0c4ff', '#bbbdf6']} // AroAce Green, Blue, Purple
+                    colorStops={['#a855f7', '#d946ef', '#ec4899']} // Purple to Pink Theme
                     speed={0.5}
                     amplitude={1.0}
                 />
             </div>
 
             {/* ReactBits component: SpotlightCard */}
-            <SpotlightCard className="w-full max-w-md z-10 backdrop-blur-xl bg-black/30 border border-white/10 rounded-2xl p-8 shadow-2xl" spotlightColor="rgba(111, 207, 151, 0.2)">
-                <div className="text-center mb-8">
-                    <h1 className="text-4xl font-bold mb-3 tracking-tighter">
-                        {/* ReactBits component: SplitText */}
-                        <SplitText
-                            text={isSignUp ? "Join AroAce Midgard" : "Welcome Back"}
-                            className="inline-block text-white"
-                            delay={40}
-                            animationFrom={{ opacity: 0, transform: 'translate3d(0,50px,0)' }}
-                            animationTo={{ opacity: 1, transform: 'translate3d(0,0,0)' }}
-                            threshold={0.2}
-                            rootMargin="-50px"
-                        />
+            <SpotlightCard className="w-full max-w-md z-10 backdrop-blur-xl bg-black/30 border border-white/10 rounded-2xl p-8 shadow-2xl" spotlightColor="rgba(168, 85, 247, 0.2)">
+                <div className="text-center mb-8 flex flex-col items-center">
+                    <h1 className="text-3xl md:text-4xl font-bold mb-3 w-full text-center text-white">
+                        {isSignUp ? "Join AroAce Midgard" : "Welcome Back"}
                     </h1>
                     <p className="text-slate-300">
                         {isSignUp ? "Create your space in the community" : "Sign in to continue your journey"}
@@ -166,7 +156,7 @@ export default function LoginPage() {
                         <div className="space-y-4">
                             <div className="relative group">
                                 <input
-                                    className="flex h-14 w-full rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-white placeholder:text-slate-500 focus:outline-none focus:ring-1 focus:ring-[#6fcf97] focus:border-[#6fcf97]/50 transition-all duration-300 font-medium group-hover:bg-white/10"
+                                    className="flex h-14 w-full rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-white placeholder:text-slate-500 focus:outline-none focus:ring-1 focus:ring-[#a855f7] focus:border-[#a855f7]/50 transition-all duration-300 font-medium group-hover:bg-white/10"
                                     placeholder="Email address"
                                     type="email"
                                     value={email}
@@ -176,7 +166,7 @@ export default function LoginPage() {
                             </div>
                             <div className="relative group">
                                 <input
-                                    className="flex h-14 w-full rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-white placeholder:text-slate-500 focus:outline-none focus:ring-1 focus:ring-[#6fcf97] focus:border-[#6fcf97]/50 transition-all duration-300 font-medium group-hover:bg-white/10"
+                                    className="flex h-14 w-full rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-white placeholder:text-slate-500 focus:outline-none focus:ring-1 focus:ring-[#a855f7] focus:border-[#a855f7]/50 transition-all duration-300 font-medium group-hover:bg-white/10"
                                     placeholder="Password"
                                     type="password"
                                     value={password}
@@ -189,7 +179,7 @@ export default function LoginPage() {
                         {/* ReactBits component: MagnetButton */}
                         <MagnetButton
                             type="submit"
-                            className="w-full h-14 bg-gradient-to-r from-[#6fcf97] to-[#38965f] text-black font-bold shadow-lg shadow-[#6fcf97]/20 border-none hover:shadow-[#6fcf97]/40 rounded-xl"
+                            className="w-full h-14 bg-gradient-to-r from-[#a855f7] to-[#ec4899] text-white font-bold shadow-lg shadow-[#a855f7]/20 border-none hover:shadow-[#ec4899]/40 rounded-xl"
                             disabled={loading}
                             strength={50}
                         >
@@ -200,7 +190,7 @@ export default function LoginPage() {
                     <p className="text-center text-sm text-slate-400 mt-2">
                         {isSignUp ? "Already have an account? " : "Don't have an account? "}
                         <button
-                            className="text-[#a0c4ff] hover:text-[#7ea8ff] transition-colors font-medium hover:underline"
+                            className="text-[#d8b4fe] hover:text-[#c084fc] transition-colors font-medium hover:underline"
                             onClick={() => setIsSignUp(!isSignUp)}
                         >
                             {isSignUp ? "Sign In" : "Sign Up"}

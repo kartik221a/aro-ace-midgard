@@ -3,6 +3,7 @@ import './star-border.css';
 interface StarBorderProps {
     as?: React.ElementType;
     className?: string;
+    innerClassName?: string;
     color?: string;
     speed?: string;
     thickness?: number;
@@ -13,6 +14,7 @@ interface StarBorderProps {
 const StarBorder: React.FC<StarBorderProps> = ({
     as: Component = 'button',
     className = '',
+    innerClassName = '',
     color = 'white',
     speed = '6s',
     thickness = 1,
@@ -42,7 +44,7 @@ const StarBorder: React.FC<StarBorderProps> = ({
                     animationDuration: speed
                 }}
             ></div>
-            <div className="inner-content">{children}</div>
+            <div className={`inner-content ${innerClassName}`}>{children}</div>
         </Component>
     );
 };

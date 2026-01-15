@@ -1,0 +1,196 @@
+:root {
+    --white: hsl(0, 0%, 100%);
+    --purple-primary: rgba(132, 0, 255, 1);
+    --purple-glow: rgba(132, 0, 255, 0.2);
+    --purple-border: rgba(132, 0, 255, 0.8);
+    --border-color: #392e4e;
+    --background-dark: #060010;
+}
+
+.card-grid {
+    display: grid;
+    gap: 1em;
+    padding: 1em;
+    width: 100%;
+}
+
+.magic-bento-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+    min-height: 180px;
+    width: 100%;
+    padding: 1.5em;
+    border-radius: 24px;
+    background: linear-gradient(135deg, rgba(var(--card-theme-color), 0.12), rgba(var(--card-theme-color), 0.04)), rgba(15, 17, 26, 0.8);
+    border-color: rgba(var(--card-theme-color), 0.25);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    font-weight: 300;
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+
+    --glow-x: 50%;
+    --glow-y: 50%;
+    --glow-intensity: 0;
+    --glow-radius: 300px;
+}
+
+.magic-bento-card:hover {
+    transform: translateY(-4px) scale(1.01);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+    border-color: rgba(var(--card-theme-color), 0.6);
+}
+
+.magic-bento-card__header,
+.magic-bento-card__content {
+    display: flex;
+    position: relative;
+    color: var(--white);
+    z-index: 2;
+}
+
+.magic-bento-card__header {
+    gap: 0.75em;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.magic-bento-card__content {
+    flex-direction: column;
+    margin-top: auto;
+}
+
+.magic-bento-card__label {
+    font-size: 13px;
+    background: rgba(var(--card-theme-color), 0.15);
+    padding: 4px 14px;
+    border-radius: 100px;
+    border: 1px solid rgba(var(--card-theme-color), 0.3);
+    color: #fff;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    backdrop-filter: blur(4px);
+}
+
+.magic-bento-card__title {
+    font-weight: 700;
+    font-size: 24px;
+    margin: 0 0 0.1em;
+    background: linear-gradient(to right, #fff, rgba(255, 255, 255, 0.7));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.magic-bento-card__description {
+    font-size: 14px;
+    line-height: 1.4;
+    opacity: 0.6;
+    color: #94a3b8;
+}
+
+/* Responsive Grid */
+@media (max-width: 639px) {
+    .card-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (min-width: 640px) and (max-width: 1023px) {
+    .card-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 1024px) {
+    .card-grid {
+        grid-template-columns: repeat(6, 1fr);
+        grid-auto-rows: 180px;
+    }
+
+    /* Big Tiles */
+    .magic-bento-card.big-tile {
+        grid-column: span 3;
+        grid-row: span 1;
+    }
+
+    /* Medium Tiles */
+    .magic-bento-card.medium-tile {
+        grid-column: span 2;
+        grid-row: span 1;
+    }
+
+    /* Small Tiles */
+    .magic-bento-card.small-tile {
+        grid-column: span 1;
+        grid-row: span 1;
+    }
+
+    /* Layout specifically for 5 items: 2 Big, 3 Medium */
+    /* Or 2 Big, 2 Small, 1 Medium */
+    /* I'll use a custom layout for the 5 dashboard stats */
+    .magic-bento-card:nth-child(1) {
+        grid-column: span 3;
+    }
+
+    /* Friend Requests */
+    .magic-bento-card:nth-child(2) {
+        grid-column: span 3;
+    }
+
+    /* Partner Requests */
+    .magic-bento-card:nth-child(3) {
+        grid-column: span 2;
+    }
+
+    /* Friends */
+    .magic-bento-card:nth-child(4) {
+        grid-column: span 2;
+    }
+
+    /* Partners */
+    .magic-bento-card:nth-child(5) {
+        grid-column: span 2;
+    }
+
+    /* Sent */
+}
+
+/* Border glow effect */
+.magic-bento-card--border-glow::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    padding: 1px;
+    background: radial-gradient(var(--glow-radius) circle at var(--glow-x) var(--glow-y),
+            rgba(var(--card-theme-color), calc(var(--glow-intensity) * 0.6)) 0%,
+            rgba(var(--card-theme-color), calc(var(--glow-intensity) * 0.3)) 40%,
+            transparent 70%);
+    border-radius: inherit;
+    -webkit-mask:
+        linear-gradient(#fff 0 0) content-box,
+        linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask:
+        linear-gradient(#fff 0 0) content-box,
+        linear-gradient(#fff 0 0);
+    mask-composite: exclude;
+    pointer-events: none;
+    opacity: 1;
+    transition: opacity 0.3s ease;
+    z-index: 1;
+}
+
+.particle {
+    z-index: 0;
+}
+
+.global-spotlight {
+    mix-blend-mode: plus-lighter;
+    will-change: transform, opacity;
+    z-index: 200 !important;
+    pointer-events: none;
+}

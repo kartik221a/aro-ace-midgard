@@ -60,6 +60,18 @@ export const LikesService = {
         }
     },
 
+    // Get match status between two users
+    async getMatchStatus(uid1: string, uid2: string): Promise<LikeType | null> {
+        if (!db || !uid1 || !uid2) return null;
+        const sortedIds = [uid1, uid2].sort();
+        const matchId = `${sortedIds[0]}_${sortedIds[1]}`;
+        const matchSnap = await getDoc(doc(db, MATCHES_COLLECTION, matchId));
+        if (matchSnap.exists()) {
+            return (matchSnap.data() as MatchData).type;
+        }
+        return null;
+    },
+
     // Toggle like: 
     // - If no like exists: Create it
     // - If like exists with same type: Remove it (Unlike)
@@ -168,6 +180,25 @@ export const LikesService = {
                 likesMap[data.toUserId] = data.type;
             });
             callback(likesMap);
+        });
+    },
+
+    // Listen to all matches FOR the current user
+    listenToMyMatches(userId: string, callback: (matches: Record<string, LikeType>) => void) {
+        if (!db || !userId) return () => { };
+
+        const q = query(collection(db, MATCHES_COLLECTION), where(`users.${userId}`, "==", true));
+
+        return onSnapshot(q, (snapshot) => {
+            const matchesMap: Record<string, LikeType> = {};
+            snapshot.docs.forEach(doc => {
+                const data = doc.data() as MatchData;
+                const otherUserId = data.userIds.find(uid => uid !== userId);
+                if (otherUserId) {
+                    matchesMap[otherUserId] = data.type;
+                }
+            });
+            callback(matchesMap);
         });
     },
 

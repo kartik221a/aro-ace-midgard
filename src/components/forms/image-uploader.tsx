@@ -48,7 +48,7 @@ function SortableImage({ url, index, onRemove, showMainLabel }: { url: string; i
             style={style}
             {...attributes}
             {...listeners}
-            className="relative aspect-square rounded-lg overflow-hidden border border-slate-200 group touch-none"
+            className="relative aspect-square rounded-lg overflow-hidden border border-white/10 group touch-none bg-white/5"
         >
             <img src={url} alt={`Upload ${index}`} className="object-cover w-full h-full" />
             <button
@@ -225,9 +225,9 @@ export function ImageUploader({ images, onChange, maxImages = 5, showMainLabel =
                     </SortableContext>
 
                     {images.length < maxImages && (
-                        <div className="relative aspect-square rounded-lg border-2 border-dashed border-slate-300 flex flex-col items-center justify-center text-slate-400 hover:bg-slate-50 transition-colors">
+                        <div className="relative aspect-square rounded-lg border-2 border-dashed border-white/20 flex flex-col items-center justify-center text-slate-400 hover:bg-white/5 hover:border-white/40 transition-all group">
                             {uploading ? (
-                                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-rose-500"></div>
+                                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-500"></div>
                             ) : (
                                 <>
                                     <ImageIcon className="h-8 w-8 mb-2" />

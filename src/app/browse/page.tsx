@@ -4,31 +4,41 @@ import { useEffect, useState, useMemo } from "react";
 import { collection, query, where, getDocs, orderBy } from "firebase/firestore";
 import { db } from "@/lib/firebase/client";
 import { Introduction } from "@/types";
+import { cn } from "@/lib/utils";
 import { SectionDivider } from "@/components/ui/section-divider";
 import { IntroductionCard } from "@/components/introduction-card";
 import { BrowseFilters, FilterState } from "@/components/browse/browse-filters";
 import { Button } from "@/components/ui/button";
-import { Filter } from "lucide-react";
+import { Filter, ChevronLeft, ChevronRight } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useAuth } from "@/lib/auth-context";
 import { LikesService, LikeType } from "@/lib/services/likes";
-import { SplitText } from "@/components/ui/reactbits/split-text";
-import { motion } from "framer-motion";
+import GradientText from "@/components/GradientText";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function BrowsePage() {
     const { user } = useAuth();
     const [introductions, setIntroductions] = useState<Introduction[]>([]);
     const [loading, setLoading] = useState(true);
     const [myLikes, setMyLikes] = useState<Record<string, LikeType>>({});
+    const [myMatches, setMyMatches] = useState<Record<string, LikeType>>({});
+    const [currentPage, setCurrentPage] = useState(1);
 
     useEffect(() => {
         if (user) {
-            const unsubscribe = LikesService.listenToMyLikes(user.uid, (likes) => {
+            const unsubLikes = LikesService.listenToMyLikes(user.uid, (likes) => {
                 setMyLikes(likes);
             });
-            return () => unsubscribe();
+            const unsubMatches = LikesService.listenToMyMatches(user.uid, (matches) => {
+                setMyMatches(matches);
+            });
+            return () => {
+                unsubLikes();
+                unsubMatches();
+            };
         } else {
             setMyLikes({});
+            setMyMatches({});
         }
     }, [user]);
 
@@ -44,6 +54,11 @@ export default function BrowsePage() {
         polyamory: [],
         marriage: []
     });
+
+    // Reset to page 1 when filters change
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [filters]);
 
     useEffect(() => {
         const fetchIntroductions = async () => {
@@ -79,7 +94,10 @@ export default function BrowsePage() {
     // Filter Logic
     const filteredIntroductions = useMemo(() => {
         return introductions.filter(intro => {
-            // 0. Exclude already likes (Friend or Partner)
+            // 0. Exclude self and already liked profiles
+            if (user && intro.uid === user.uid) {
+                return false;
+            }
             if (myLikes[intro.uid]) {
                 return false;
             }
@@ -108,8 +126,6 @@ export default function BrowsePage() {
 
             // 5. Sex Desire (Exact match on personal desire)
             if (filters.sexDesire.length > 0) {
-                // If user hasn't set it, we probably shouldn't filter them out unless looking for "not set"? 
-                // Usually blank means unspecified. Let's assume if filter is set, we strictly match.
                 if (!intro.lookingFor?.personal?.sexDesire || !filters.sexDesire.includes(intro.lookingFor.personal.sexDesire)) {
                     return false;
                 }
@@ -154,19 +170,119 @@ export default function BrowsePage() {
         });
     }, [introductions, filters, myLikes]);
 
+    // Pagination Logic
+    const pageSize = 30;
+    const totalPages = Math.ceil(filteredIntroductions.length / pageSize) || 1;
+    const currentCards = useMemo(() => {
+        const start = (currentPage - 1) * pageSize;
+        return filteredIntroductions.slice(start, start + pageSize);
+    }, [filteredIntroductions, currentPage]);
+
+    const goToPage = (page: number) => {
+        setCurrentPage(page);
+        window.scrollTo({ top: 0, behavior: "smooth" });
+    };
+
+    const goToNextPage = () => {
+        if (currentPage < totalPages) {
+            goToPage(currentPage + 1);
+        }
+    };
+
+    const goToPrevPage = () => {
+        if (currentPage > 1) {
+            goToPage(currentPage - 1);
+        }
+    };
+
+    const getPageNumbers = () => {
+        const pages = [];
+        if (totalPages <= 7) {
+            for (let i = 1; i <= totalPages; i++) pages.push(i);
+        } else {
+            pages.push(1);
+            if (currentPage > 3) pages.push("...");
+
+            let start = Math.max(2, currentPage - 1);
+            let end = Math.min(totalPages - 1, currentPage + 1);
+
+            if (currentPage <= 3) {
+                start = 2;
+                end = 4;
+            } else if (currentPage >= totalPages - 2) {
+                start = totalPages - 3;
+                end = totalPages - 1;
+            }
+
+            for (let i = start; i <= end; i++) {
+                if (!pages.includes(i)) pages.push(i);
+            }
+
+            if (currentPage < totalPages - 2) pages.push("...");
+            if (!pages.includes(totalPages)) pages.push(totalPages);
+        }
+        return pages;
+    };
+
+    const PaginationControls = () => (
+        <div className="flex flex-wrap items-center justify-center gap-2 py-4">
+            <Button
+                variant="outline"
+                size="icon"
+                onClick={goToPrevPage}
+                disabled={currentPage === 1}
+                className="rounded-full border border-white/40 bg-white/10 text-white hover:bg-white/20 hover:border-white/60 disabled:opacity-20 h-10 w-10 shadow-[0_0_15px_rgba(255,255,255,0.1)] backdrop-blur-sm transition-all"
+            >
+                <ChevronLeft className="h-4 w-4" />
+            </Button>
+
+            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-md">
+                {getPageNumbers().map((p, i) => (
+                    typeof p === "number" ? (
+                        <button
+                            key={i}
+                            onClick={() => goToPage(p)}
+                            className={cn(
+                                "min-w-[32px] h-8 px-2 rounded-full text-sm font-bold transition-all duration-300",
+                                currentPage === p
+                                    ? "bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-lg shadow-purple-900/40"
+                                    : "text-slate-400 hover:bg-white/10 hover:text-slate-200"
+                            )}
+                        >
+                            {p}
+                        </button>
+                    ) : (
+                        <span key={i} className="text-slate-600 px-1 select-none">...</span>
+                    )
+                ))}
+            </div>
+
+            <Button
+                variant="outline"
+                size="icon"
+                onClick={goToNextPage}
+                disabled={currentPage === totalPages}
+                className="rounded-full border border-white/40 bg-white/10 text-white hover:bg-white/20 hover:border-white/60 disabled:opacity-20 h-10 w-10 shadow-[0_0_15px_rgba(255,255,255,0.1)] backdrop-blur-sm transition-all"
+            >
+                <ChevronRight className="h-4 w-4" />
+            </Button>
+        </div>
+    );
+
     return (
         <div className="min-h-screen pt-24 pb-20 px-4">
             <div className="container mx-auto">
-                <div className="flex flex-col md:flex-row justify-between items-end mb-8 gap-4">
-                    <div>
-                        <h1 className="text-4xl font-bold mb-2">
-                            <SplitText
-                                text="Browse Introductions"
-                                className="text-4xl font-bold text-white inline-block"
-                                delay={0.1}
-                            />
-                        </h1>
-                        <p className="text-slate-400">Find new friends and potential partners.</p>
+                <div className="flex flex-col items-center text-center mb-12 gap-4">
+                    <div className="w-full">
+                        <GradientText
+                            colors={["#a855f7", "#d946ef", "#ec4899"]} // Purple to Fuchsia to Pink
+                            animationSpeed={3}
+                            showBorder={false}
+                            className="text-4xl md:text-5xl font-bold tracking-tight"
+                        >
+                            Browse Introductions
+                        </GradientText>
+                        <p className="text-slate-400 mt-4 text-lg">Find new friends and potential partners in the community.</p>
                     </div>
 
                     {/* Mobile Filter Toggle */}
@@ -174,10 +290,10 @@ export default function BrowsePage() {
                         <Sheet>
                             <SheetTrigger asChild>
                                 <Button variant="outline" className="border-white/10 bg-white/5 text-slate-300 hover:text-white hover:bg-white/10">
-                                    <Filter className="w-4 h-4 mr-2" /> Filters
+                                    <Filter className="w-4 h-4 mr-2 text-purple-400" /> Filters
                                 </Button>
                             </SheetTrigger>
-                            <SheetContent side="left" className="w-[300px] sm:w-[400px] overflow-y-auto bg-[#0f111a] border-r border-white/10 text-slate-200">
+                            <SheetContent side="left" className="w-[300px] sm:w-[400px] overflow-y-auto bg-black border-r border-white/10 text-slate-200">
                                 <div className="py-4">
                                     <BrowseFilters
                                         filters={filters}
@@ -203,7 +319,7 @@ export default function BrowsePage() {
                         </div>
                     </div>
 
-                    {/* Grid */}
+                    {/* Profile View Area */}
                     <div className="flex-1 w-full min-w-0">
                         {loading ? (
                             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
@@ -212,28 +328,39 @@ export default function BrowsePage() {
                                 ))}
                             </div>
                         ) : filteredIntroductions.length > 0 ? (
-                            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-                                {filteredIntroductions.map(intro => (
-                                    <motion.div
-                                        key={intro.uid}
-                                        initial={{ opacity: 0, y: 20 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        transition={{ duration: 0.4 }}
-                                    >
-                                        <IntroductionCard
-                                            introduction={intro}
-                                            myLikeStatus={myLikes[intro.uid] || null}
-                                            onToggleLike={(type) => {
-                                                if (user) {
-                                                    LikesService.toggleLike(user.uid, intro.uid, type);
-                                                } else {
-                                                    // Optional: Redirect to login or show toast
-                                                    alert("Please sign in to like!");
-                                                }
-                                            }}
-                                        />
-                                    </motion.div>
-                                ))}
+                            <div className="space-y-8">
+                                {/* Top Pagination */}
+                                <PaginationControls />
+
+                                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                                    <AnimatePresence mode="popLayout">
+                                        {currentCards.map((intro) => (
+                                            <motion.div
+                                                key={intro.uid}
+                                                initial={{ opacity: 0, scale: 0.95 }}
+                                                animate={{ opacity: 1, scale: 1 }}
+                                                exit={{ opacity: 0, scale: 0.95 }}
+                                                transition={{ duration: 0.3 }}
+                                            >
+                                                <IntroductionCard
+                                                    introduction={intro}
+                                                    myLikeStatus={myLikes[intro.uid] || null}
+                                                    matchStatus={myMatches[intro.uid] || null}
+                                                    onToggleLike={(type) => {
+                                                        if (user) {
+                                                            LikesService.toggleLike(user.uid, intro.uid, type);
+                                                        } else {
+                                                            alert("Please sign in to like!");
+                                                        }
+                                                    }}
+                                                />
+                                            </motion.div>
+                                        ))}
+                                    </AnimatePresence>
+                                </div>
+
+                                {/* Bottom Pagination */}
+                                <PaginationControls />
                             </div>
                         ) : (
                             <div className="text-center py-20 bg-white/5 rounded-xl border border-dashed border-white/10 backdrop-blur-sm">
@@ -243,7 +370,7 @@ export default function BrowsePage() {
                                 </p>
                                 <Button
                                     variant="link"
-                                    className="text-rose-400 hover:text-rose-300"
+                                    className="text-purple-400 hover:text-purple-300"
                                     onClick={() => setFilters({
                                         searchTerm: "",
                                         ageRange: [18, 100],

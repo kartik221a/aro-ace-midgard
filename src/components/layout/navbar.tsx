@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { useAuth } from "@/lib/auth-context";
-import { ModeToggle } from "@/components/mode-toggle";
 import { GradientText } from "@/components/ui/gradient-text";
 import MagnetButton from "@/components/ui/reactbits/magnet-button";
 import { motion, AnimatePresence } from "framer-motion";
@@ -27,7 +26,7 @@ export function Navbar() {
                     {/* Logo - kept simple inside pill */}
                     <Link href="/" className="mr-8 hover:opacity-80 transition-opacity">
                         <span className="font-bold text-lg tracking-tight text-white">
-                            AroAce <span className="text-[#6fcf97]">Midgard</span>
+                            AroAce <span className="text-[#a855f7]">Midgard</span>
                         </span>
                     </Link>
 
@@ -59,18 +58,14 @@ export function Navbar() {
                             </>
                         ) : (
                             <Link href="/login">
-                                <MagnetButton className="bg-[#6fcf97] text-black font-bold hover:bg-[#5dbb85] px-5 py-2 rounded-full shadow-lg shadow-[#6fcf97]/20 border-none text-sm h-9" strength={20}>Sign In</MagnetButton>
+                                <MagnetButton className="bg-[#a855f7] text-white font-bold hover:bg-[#9333ea] px-5 py-2 rounded-full shadow-lg shadow-[#a855f7]/20 border-none text-sm h-9" strength={20}>Sign In</MagnetButton>
                             </Link>
                         )}
 
-                        <div className="ml-2">
-                            <ModeToggle />
-                        </div>
                     </div>
 
                     {/* Mobile Menu Toggle */}
                     <div className="md:hidden flex items-center ml-auto gap-4 pr-2">
-                        <ModeToggle />
                         <button onClick={toggleMenu} className="text-white p-2">
                             {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
                         </button>
@@ -103,7 +98,7 @@ export function Navbar() {
                                 </>
                             ) : (
                                 <Link href="/login" onClick={() => setIsMobileMenuOpen(false)}>
-                                    <span className="text-3xl font-bold text-[#6fcf97]">Sign In</span>
+                                    <span className="text-3xl font-bold text-[#a855f7]">Sign In</span>
                                 </Link>
                             )}
                         </div>

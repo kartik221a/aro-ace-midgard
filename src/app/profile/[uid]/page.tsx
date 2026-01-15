@@ -17,6 +17,7 @@ export default function ProfilePage() {
     const uid = params.uid as string;
     const [introduction, setIntroduction] = useState<Introduction | null>(null);
     const [myLikeStatus, setMyLikeStatus] = useState<LikeType | null>(null);
+    const [matchStatus, setMatchStatus] = useState<LikeType | null>(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -29,10 +30,14 @@ export default function ProfilePage() {
                 if (docSnap.exists()) {
                     setIntroduction(docSnap.data() as Introduction);
 
-                    // Fetch like status if user is logged in
+                    // Fetch like & match status if user is logged in
                     if (user) {
-                        const status = await LikesService.getLikeStatus(user.uid, uid);
-                        setMyLikeStatus(status);
+                        const [lStatus, mStatus] = await Promise.all([
+                            LikesService.getLikeStatus(user.uid, uid),
+                            LikesService.getMatchStatus(user.uid, uid)
+                        ]);
+                        setMyLikeStatus(lStatus);
+                        setMatchStatus(mStatus);
                     }
                 }
             } catch (error) {
@@ -60,6 +65,9 @@ export default function ProfilePage() {
 
         try {
             await LikesService.toggleLike(user.uid, introduction.uid, type);
+            // Refresh match status after toggle
+            const mStatus = await LikesService.getMatchStatus(user.uid, uid);
+            setMatchStatus(mStatus);
         } catch (error) {
             console.error("Failed to toggle like", error);
             setMyLikeStatus(oldStatus); // Revert on error
@@ -67,11 +75,11 @@ export default function ProfilePage() {
     };
 
     if (loading) return (
-        <div className="container mx-auto py-12 px-4">
-            <div className="h-64 bg-slate-100 rounded-2xl animate-pulse mb-8" />
+        <div className="container mx-auto py-12 px-4 shadow-2xl">
+            <div className="h-64 bg-white/5 rounded-2xl animate-pulse mb-8 border border-white/5" />
             <div className="space-y-4">
-                <div className="h-8 w-1/3 bg-slate-100 rounded animate-pulse" />
-                <div className="h-4 w-1/4 bg-slate-100 rounded animate-pulse" />
+                <div className="h-8 w-1/3 bg-white/5 rounded animate-pulse border border-white/5" />
+                <div className="h-4 w-1/4 bg-white/5 rounded animate-pulse border border-white/5" />
             </div>
         </div>
     );
@@ -79,8 +87,8 @@ export default function ProfilePage() {
     if (!introduction) {
         return (
             <div className="container mx-auto py-20 text-center space-y-6">
-                <h1 className="text-3xl font-bold text-slate-800">Profile Not Found</h1>
-                <p className="text-slate-500 max-w-md mx-auto">
+                <h1 className="text-3xl font-bold text-white">Profile Not Found</h1>
+                <p className="text-slate-400 max-w-md mx-auto">
                     The user has not created an introduction yet, or the profile you are looking for does not exist.
                 </p>
                 <Button onClick={() => window.location.href = "/"}>Go Home</Button>
@@ -107,6 +115,7 @@ export default function ProfilePage() {
             introduction={introduction}
             isOwnProfile={isOwnProfile}
             myLikeStatus={myLikeStatus}
+            matchStatus={matchStatus}
             onToggleLike={handleToggleLike}
         />
     );

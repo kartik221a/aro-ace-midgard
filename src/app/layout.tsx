@@ -35,35 +35,35 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body
         className={cn(
-          "min-h-screen bg-background font-sans antialiased",
+          "min-h-screen bg-black font-sans antialiased",
           outfit.variable,
           inter.variable
         )}
       >
         <ThemeProvider
           attribute="class"
-          defaultTheme="system"
-          enableSystem
+          defaultTheme="dark"
+          forcedTheme="dark"
           disableTransitionOnChange
         >
           <AuthProvider>
             {/* Global Cosmic Background */}
-            <div className="fixed inset-0 z-[-1] bg-[#050508]">
-              <div className="absolute inset-0 opacity-40">
+            <div className="fixed inset-0 z-0 bg-black pointer-events-none">
+              <div className="absolute inset-0 opacity-80">
                 <Aurora
-                  colorStops={['#8e03a0', '#fd68dd', '#3610d1']}
+                  colorStops={['#a855f7', '#d946ef', '#ec4899']} // Global Purple to Pink Theme
                   speed={0.5}
                   blend={1.0}
                   amplitude={1.0}
                 />
               </div>
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,#050508_100%)]" />
             </div>
 
-            <Navbar />
-
-            <main className="flex-1 min-h-[calc(100vh-140px)] relative z-10">{children}</main>
-            <Footer />
+            <div className="relative z-10 flex flex-col min-h-screen">
+              <Navbar />
+              <main className="flex-1 min-h-[calc(100vh-140px)] relative z-10">{children}</main>
+              <Footer />
+            </div>
           </AuthProvider>
         </ThemeProvider>
       </body>

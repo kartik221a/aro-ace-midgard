@@ -27,8 +27,10 @@ export const SplitText = ({
     useEffect(() => {
         if (isInView) {
             controls.start("visible");
+        } else {
+            controls.start("hidden");
         }
-    }, [isInView, controls]);
+    }, [isInView, controls, text]);
 
     const words = text.split(" "); // Simple split by words for now
 
@@ -70,10 +72,10 @@ export const SplitText = ({
             variants={container}
             initial="hidden"
             animate={controls}
-            style={{ display: "inline-flex", flexWrap: "wrap", justifyContent: "center" }}
+            style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", width: "100%" }}
         >
             {words.map((word, index) => (
-                <motion.div key={index} style={{ marginRight: "0.25em", overflow: "hidden", display: "flex" }}>
+                <motion.div key={`${word}-${index}`} style={{ marginRight: "0.25em", display: "flex" }}>
                     <motion.span variants={child}>
                         {word}
                     </motion.span>
