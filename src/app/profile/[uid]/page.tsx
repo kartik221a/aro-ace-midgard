@@ -12,7 +12,7 @@ import { useAuth } from "@/lib/auth-context";
 import { LikesService, LikeType } from "@/lib/services/likes";
 
 export default function ProfilePage() {
-    const { user } = useAuth();
+    const { user, userData } = useAuth();
     const params = useParams();
     const uid = params.uid as string;
     const [introduction, setIntroduction] = useState<Introduction | null>(null);
@@ -109,10 +109,16 @@ export default function ProfilePage() {
     const age = calculateAge(basicInfo?.dob);
 
     const isOwnProfile = user?.uid === introduction.uid;
+    const isAdmin = userData?.role === "admin";
+
+    // If owner or admin is viewing a profile with a pending update, show the pending data as a preview
+    const displayData = (isOwnProfile || isAdmin) && introduction.pendingUpdate
+        ? { ...introduction, ...introduction.pendingUpdate } as Introduction
+        : introduction;
 
     return (
         <ProfileDisplay
-            introduction={introduction}
+            introduction={displayData}
             isOwnProfile={isOwnProfile}
             myLikeStatus={myLikeStatus}
             matchStatus={matchStatus}

@@ -10,6 +10,7 @@ import { collection, doc, onSnapshot, query, serverTimestamp, updateDoc, where }
 import { db } from "@/lib/firebase/client";
 import { Introduction, IntroductionStatus } from "@/types";
 import { useAuth } from "@/lib/auth-context";
+import { getDoc } from "firebase/firestore";
 
 
 import { SplitText } from "@/components/ui/reactbits/split-text";
@@ -37,15 +38,32 @@ export default function AdminApprovedPage() {
             updatedAt: serverTimestamp(),
         };
 
-        if (status === 'approved') {
-            updateData.approvedBy = user.uid;
-        } else if (status === 'rejected') {
-            updateData.rejectedBy = user.uid;
-            if (reason) updateData.rejectionReason = reason;
-        }
-
         try {
-            await updateDoc(doc(db!, "introductions", uid), updateData);
+            const docRef = doc(db!, "introductions", uid);
+            if (status === 'approved') {
+                const docSnap = await getDoc(docRef);
+                if (docSnap.exists()) {
+                    const intro = docSnap.data() as Introduction;
+                    if (intro.pendingUpdate) {
+                        // Merge pendingUpdate into root
+                        const { pendingUpdate, ...rest } = intro;
+                        const mergedData = {
+                            ...rest,
+                            ...pendingUpdate,
+                            status: 'approved' as IntroductionStatus,
+                            approvedBy: user.uid,
+                            reviewedAt: Date.now(),
+                            updatedAt: serverTimestamp(),
+                            pendingUpdate: null // Clear it
+                        };
+                        await updateDoc(docRef, mergedData);
+                        return;
+                    }
+                }
+            }
+
+            // Fallback for simple status updates or rejections
+            await updateDoc(docRef, updateData);
         } catch (error) {
             console.error("Failed to update status", error);
             alert("Failed to update status");

@@ -229,8 +229,11 @@ export function ProfileDisplay({ introduction, isOwnProfile, headerActions, topO
 
                     {/* 1. Identity Snapshot Card */}
                     <SpotlightCard className="bg-white/5 backdrop-blur-md rounded-2xl md:rounded-[2rem] border border-white/10 overflow-hidden shadow-2xl" spotlightColor="rgba(139, 92, 246, 0.15)">
-                        <div className="bg-gradient-to-r from-purple-600/30 via-indigo-600/20 to-transparent p-4 md:p-8 border-b border-white/10">
-                            <h3 className="font-black text-purple-100 uppercase tracking-[0.2em] md:tracking-[0.4em] text-[9px] md:text-xs text-center">Identity Snapshot</h3>
+                        <div className="bg-gradient-to-r from-cyan-600/30 via-blue-600/10 to-transparent p-5 md:p-7 border-b border-cyan-500/20">
+                            <h3 className="text-lg md:text-xl font-black text-cyan-400 flex items-center gap-3 md:gap-4">
+                                <span className="w-1 md:w-1.5 h-5 md:h-6 bg-cyan-500 rounded-full shadow-[0_0_15px_rgba(6,182,212,0.5)]" />
+                                Identity Snapshot
+                            </h3>
                         </div>
                         <div className="p-2 md:p-5 space-y-0.5 md:space-y-2">
                             <DetailRow label="Pronouns" value={identity?.pronouns} />
@@ -248,7 +251,7 @@ export function ProfileDisplay({ introduction, isOwnProfile, headerActions, topO
                     <div className="space-y-6 md:space-y-10">
                         <div className="flex items-center gap-6">
                             <span className="h-px bg-gradient-to-r from-transparent to-white/10 flex-1" />
-                            <span className="text-[10px] font-black text-slate-500 uppercase tracking-[0.5em] whitespace-nowrap">Intent & Preferences</span>
+                            <span className="text-[10px] md:text-base font-black text-slate-500 uppercase tracking-[0.2em] md:tracking-[0.3em] whitespace-nowrap">Intent & Preferences</span>
                             <span className="h-px bg-gradient-to-l from-transparent to-white/10 flex-1" />
                         </div>
 
@@ -264,40 +267,46 @@ export function ProfileDisplay({ introduction, isOwnProfile, headerActions, topO
                             <div className="space-y-6 md:space-y-8">
                                 <SpotlightCard
                                     className={cn(
-                                        "rounded-2xl md:rounded-[2rem] border p-6 md:p-8 shadow-2xl transition-transform hover:scale-[1.01]",
+                                        "rounded-2xl md:rounded-[2rem] border overflow-hidden shadow-2xl transition-transform hover:scale-[1.01]",
                                         lookingFor?.intent === "relationship" ? "bg-rose-500/[0.08] border-rose-500/30" : "bg-white/5 border-white/10"
                                     )}
                                     spotlightColor="rgba(244, 63, 94, 0.2)"
                                 >
-                                    <h4 className="text-lg md:text-2xl font-black text-rose-300 mb-4 md:mb-8 flex items-center gap-2 md:gap-4">
-                                        <Heart className="w-5 h-5 md:w-8 md:h-8 fill-current" />
-                                        ME IN RELATIONSHIP
-                                    </h4>
-                                    <div className="grid grid-cols-2 gap-x-4 gap-y-6">
-                                        <StatRow label="Desire for Sex" value={lookingFor?.personal?.sexDesire} />
-                                        <StatRow label="Desire for Romance" value={lookingFor?.personal?.romanceDesire} />
-                                        <StatRow label="Long Distance" value={lookingFor?.personal?.longDistance} />
-                                        <StatRow label="QPR" value={lookingFor?.personal?.qpr} />
-                                        <StatRow label="Polyamory" value={lookingFor?.personal?.polyamory} />
-                                        <StatRow label="Kids" value={lookingFor?.personal?.kids} />
-                                        <div className="col-span-2">
-                                            <StatRow label="Marriage" value={lookingFor?.personal?.marriage} />
+                                    <div className="bg-gradient-to-r from-rose-600/30 via-pink-600/10 to-transparent p-5 md:p-7 border-b border-rose-500/20">
+                                        <h3 className="text-lg md:text-xl font-black text-rose-400 flex items-center gap-3 md:gap-4">
+                                            <span className="w-1 md:w-1.5 h-5 md:h-6 bg-rose-500 rounded-full shadow-[0_0_15px_rgba(244,63,94,0.5)]" />
+                                            Me In Relationship
+                                        </h3>
+                                    </div>
+                                    <div className="p-6 md:p-8">
+                                        <div className="grid grid-cols-2 gap-x-4 gap-y-6">
+                                            <StatRow label="Desire for Sex" value={lookingFor?.personal?.sexDesire} />
+                                            <StatRow label="Desire for Romance" value={lookingFor?.personal?.romanceDesire} />
+                                            <StatRow label="Long Distance" value={lookingFor?.personal?.longDistance} />
+                                            <StatRow label="QPR" value={lookingFor?.personal?.qpr} />
+                                            <StatRow label="Polyamory" value={lookingFor?.personal?.polyamory} />
+                                            <StatRow label="Kids" value={lookingFor?.personal?.kids} />
+                                            <div className="col-span-2">
+                                                <StatRow label="Marriage" value={lookingFor?.personal?.marriage} />
+                                            </div>
                                         </div>
                                     </div>
                                 </SpotlightCard>
 
                                 <SpotlightCard
                                     className={cn(
-                                        "rounded-2xl md:rounded-[2rem] border p-6 md:p-8 shadow-2xl transition-transform hover:scale-[1.01]",
+                                        "rounded-2xl md:rounded-[2rem] border overflow-hidden shadow-2xl transition-transform hover:scale-[1.01]",
                                         lookingFor?.intent === "relationship" ? "bg-rose-500/[0.08] border-rose-500/30" : "bg-white/5 border-white/10"
                                     )}
                                     spotlightColor="rgba(244, 63, 94, 0.2)"
                                 >
-                                    <h4 className="text-lg md:text-2xl font-black text-rose-300 mb-4 md:mb-8 flex items-center gap-2 md:gap-4">
-                                        <Heart className="w-5 h-5 md:w-8 md:h-8" />
-                                        PARTNER PREFERENCE
-                                    </h4>
-                                    <div className="space-y-6">
+                                    <div className="bg-gradient-to-r from-rose-600/30 via-pink-600/10 to-transparent p-5 md:p-7 border-b border-rose-500/20">
+                                        <h3 className="text-lg md:text-xl font-black text-rose-400 flex items-center gap-3 md:gap-4">
+                                            <span className="w-1 md:w-1.5 h-5 md:h-6 bg-rose-500 rounded-full shadow-[0_0_15px_rgba(244,63,94,0.5)]" />
+                                            Partner Preference
+                                        </h3>
+                                    </div>
+                                    <div className="p-6 md:p-8 space-y-6">
                                         <StatRow label="Age Range" value={lookingFor?.partner?.ageRange ? `${lookingFor.partner.ageRange[0]} - ${lookingFor.partner.ageRange[1]}` : undefined} />
                                         <StatRow label="Genders" value={lookingFor?.partner?.gender?.join(", ")} />
                                         <StatRow label="Partner's Sex Desire" value={formatDesire(lookingFor?.partner?.sexDesire)} />
@@ -317,12 +326,14 @@ export function ProfileDisplay({ introduction, isOwnProfile, headerActions, topO
 
                         {/* Friends Section */}
                         {(lookingFor?.intent === "friends" || lookingFor?.intent === "both") && (
-                            <SpotlightCard className="bg-emerald-500/[0.08] rounded-2xl md:rounded-[2rem] border border-emerald-500/20 p-6 md:p-8 shadow-2xl transition-transform hover:scale-[1.01]" spotlightColor="rgba(16, 185, 129, 0.2)">
-                                <h4 className="text-lg md:text-2xl font-black text-emerald-300 mb-4 md:mb-8 flex items-center gap-2 md:gap-4">
-                                    <Users className="w-5 h-5 md:w-8 md:h-8 fill-current" />
-                                    FRIENDSHIP PREFS
-                                </h4>
-                                <div className="space-y-6">
+                            <SpotlightCard className="bg-emerald-500/[0.08] rounded-2xl md:rounded-[2rem] border border-emerald-500/20 overflow-hidden shadow-2xl transition-transform hover:scale-[1.01]" spotlightColor="rgba(16, 185, 129, 0.2)">
+                                <div className="bg-gradient-to-r from-emerald-600/30 via-teal-600/10 to-transparent p-5 md:p-7 border-b border-emerald-500/20">
+                                    <h3 className="text-lg md:text-xl font-black text-emerald-400 flex items-center gap-3 md:gap-4">
+                                        <span className="w-1 md:w-1.5 h-5 md:h-6 bg-emerald-500 rounded-full shadow-[0_0_15px_rgba(16,185,129,0.5)]" />
+                                        Friendship Prefs
+                                    </h3>
+                                </div>
+                                <div className="p-6 md:p-8 space-y-6">
                                     <StatRow label="Age Range" value={lookingFor?.friends?.ageRange ? `${lookingFor.friends.ageRange[0]} - ${lookingFor.friends.ageRange[1]}` : undefined} />
                                     <StatRow label="Genders" value={lookingFor?.friends?.gender?.join(", ")} />
                                 </div>
@@ -351,8 +362,8 @@ export function ProfileDisplay({ introduction, isOwnProfile, headerActions, topO
                         </div>
 
                         {lifestyle?.interests && (
-                            <div className="mt-4 md:mt-10 pt-4 md:pt-8 border-t border-white/10 p-4 md:p-0">
-                                <h4 className="text-[9px] md:text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-2 md:mb-4">Interests</h4>
+                            <div className="mt-4 md:mt-10 pt-4 md:pt-8 border-t border-white/10 px-4 md:px-8 pb-6 md:pb-12">
+                                <h4 className="text-[9px] md:text-base font-black text-slate-500 uppercase tracking-[0.1em] md:tracking-[0.1em] mb-2 md:mb-4">Interests</h4>
                                 <p className="text-sm md:text-lg text-slate-300 font-medium leading-relaxed whitespace-pre-wrap">
                                     {lifestyle.interests}
                                 </p>
@@ -362,7 +373,7 @@ export function ProfileDisplay({ introduction, isOwnProfile, headerActions, topO
 
                 </div>
             </div>
-        </div>
+        </div >
     );
 }
 
@@ -371,7 +382,7 @@ function DetailRow({ label, value }: { label: string; value?: string | number })
     if (!value || value === "") return null;
     return (
         <div className="flex justify-between items-center p-2 md:p-4 hover:bg-white/[0.07] transition-all rounded-lg md:rounded-2xl group/row">
-            <span className="text-[9px] md:text-[10px] font-black text-slate-500 uppercase tracking-[0.1em] md:tracking-[0.2em] group-hover/row:text-slate-400 transition-colors shrink mr-2 md:mr-8 whitespace-nowrap overflow-hidden text-ellipsis">{label}</span>
+            <span className="text-[9px] md:text-base font-black text-slate-500 uppercase tracking-[0.1em] md:tracking-[0.1em] group-hover/row:text-slate-400 transition-colors shrink mr-2 md:mr-8 whitespace-nowrap overflow-hidden text-ellipsis">{label}</span>
             <span className="font-black text-slate-100 text-right leading-tight text-xs md:text-base ml-2">{value}</span>
         </div>
     );
@@ -381,7 +392,7 @@ function StatRow({ label, value }: { label: string; value?: string | number }) {
     if (!value || value === "" || value === "Any") return null;
     return (
         <div className="flex flex-col gap-1 md:gap-2.5 p-1">
-            <span className="text-[9px] md:text-[10px] font-black text-slate-500 uppercase tracking-[0.15em] md:tracking-[0.2em]">{label}</span>
+            <span className="text-[9px] md:text-base font-black text-slate-500 uppercase tracking-[0.15em] md:tracking-[0.15em]">{label}</span>
             <span className="font-black text-slate-100 capitalize text-sm md:text-base leading-tight">{value}</span>
         </div>
     );

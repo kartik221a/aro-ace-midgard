@@ -15,6 +15,9 @@ import { useAuth } from "@/lib/auth-context";
 import { LikesService, LikeType } from "@/lib/services/likes";
 import GradientText from "@/components/GradientText";
 import { motion, AnimatePresence } from "framer-motion";
+import { doc, getDoc } from "firebase/firestore";
+import Orb from "@/components/Orb";
+import Link from "next/link";
 
 export default function BrowsePage() {
     const { user } = useAuth();
@@ -22,6 +25,7 @@ export default function BrowsePage() {
     const [loading, setLoading] = useState(true);
     const [myLikes, setMyLikes] = useState<Record<string, LikeType>>({});
     const [myMatches, setMyMatches] = useState<Record<string, LikeType>>({});
+    const [hasProfile, setHasProfile] = useState<boolean | null>(null);
     const [currentPage, setCurrentPage] = useState(1);
 
     useEffect(() => {
@@ -32,6 +36,16 @@ export default function BrowsePage() {
             const unsubMatches = LikesService.listenToMyMatches(user.uid, (matches) => {
                 setMyMatches(matches);
             });
+
+            // Check if user has a profile
+            const checkProfile = async () => {
+                if (db) {
+                    const docSnap = await getDoc(doc(db, "introductions", user.uid));
+                    setHasProfile(docSnap.exists());
+                }
+            };
+            checkProfile();
+
             return () => {
                 unsubLikes();
                 unsubMatches();
@@ -39,6 +53,7 @@ export default function BrowsePage() {
         } else {
             setMyLikes({});
             setMyMatches({});
+            setHasProfile(false);
         }
     }, [user]);
 
@@ -268,6 +283,61 @@ export default function BrowsePage() {
             </Button>
         </div>
     );
+
+    if (!user || loading || hasProfile === null) {
+        return (
+            <div className="min-h-screen flex items-center justify-center pt-24">
+                <div className="flex flex-col items-center gap-4">
+                    <div className="w-12 h-12 border-4 border-purple-500/30 border-t-purple-500 rounded-full animate-spin" />
+                    <p className="text-slate-400 font-medium animate-pulse">Scanning the cosmos...</p>
+                </div>
+            </div>
+        );
+    }
+
+    if (hasProfile === false) {
+        return (
+            <div className="min-h-screen pt-24 pb-20 px-4 relative flex flex-col items-center justify-center overflow-hidden">
+                <div className="absolute inset-0 z-0">
+                    <Orb hue={290} hoverIntensity={0.5} rotateOnHover={true} />
+                </div>
+
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="max-w-xl w-full text-center space-y-8 glass p-8 md:p-12 rounded-3xl border border-white/10 relative z-10 backdrop-blur-2xl shadow-2xl shadow-purple-500/10"
+                >
+                    <div className="h-20 w-20 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl mx-auto flex items-center justify-center shadow-lg shadow-purple-500/20 rotate-12">
+                        <Filter className="w-10 h-10 text-white" />
+                    </div>
+
+                    <div className="space-y-4">
+                        <GradientText
+                            colors={["#a855f7", "#d946ef", "#ec4899"]}
+                            animationSpeed={3}
+                            showBorder={false}
+                            className="text-3xl md:text-4xl font-bold tracking-tight"
+                        >
+                            Profile Required
+                        </GradientText>
+                        <p className="text-slate-400 text-lg leading-relaxed">
+                            To maintain a safe and committed community, you must create your own introduction before you can browse others.
+                        </p>
+                    </div>
+
+                    <div className="pt-4">
+                        <Button
+                            asChild
+                            className="w-full h-14 text-lg font-bold bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white rounded-xl shadow-xl shadow-purple-900/40 transition-all active:scale-[0.98]"
+                        >
+                            <Link href="/dashboard">Create Your Profile</Link>
+                        </Button>
+                        <p className="text-sm text-slate-500 mt-4 italic">It only takes a few minutes to connect with the cosmos.</p>
+                    </div>
+                </motion.div>
+            </div>
+        );
+    }
 
     return (
         <div className="min-h-screen pt-24 pb-20 px-4">

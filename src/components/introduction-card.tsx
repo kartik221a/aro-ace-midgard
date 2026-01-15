@@ -42,14 +42,14 @@ export function IntroductionCard({ introduction, myLikeStatus, matchStatus, onTo
     const displayAge = calculateAge(basicInfo?.dob);
 
     return (
-        <div className="h-full">
-            <TiltedCard tiltStrength={12} scaleOnHover={1.03}>
+        <div className="h-full w-full">
+            <TiltedCard tiltStrength={12} scaleOnHover={1.03} className="w-full h-full">
                 <StarBorder
                     as="div"
                     color="#a855f7"
                     speed="6s"
                     thickness={1}
-                    className="h-full rounded-3xl"
+                    className="h-full w-full rounded-3xl"
                     innerClassName="h-full flex flex-col p-0 overflow-hidden bg-[#0f111a]/95 backdrop-blur-2xl rounded-[23px] transition-all duration-500 border border-white/5"
                 >
                     <Link href={`/profile/${uid}`} className="block h-full group/card relative">

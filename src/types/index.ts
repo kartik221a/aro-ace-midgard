@@ -119,6 +119,9 @@ export interface Introduction {
 
     updatedAt: number; // Timestamp
     createdAt: number; // Timestamp
+
+    // Versioning for moderation
+    pendingUpdate?: Partial<Introduction>;
 }
 
 export interface Constants {

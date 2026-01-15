@@ -56,16 +56,21 @@ export function AdminIntroductionList({ introductions, onUpdateStatus, type }: A
                 <SpotlightCard key={intro.uid} className="flex flex-col md:flex-row gap-6 items-start md:items-center justify-between p-6 rounded-2xl border border-white/10 bg-white/5" spotlightColor="rgba(255, 255, 255, 0.1)">
                     <div className="flex items-center gap-5">
                         <div className="h-16 w-16 rounded-full bg-white/5 overflow-hidden shrink-0 border border-white/10">
-                            {intro.images.profileUrl ? (
-                                <img src={intro.images.profileUrl} alt={intro.basicInfo.name} className="h-full w-full object-cover" />
+                            {(intro.pendingUpdate?.images?.profileUrl || intro.images.profileUrl) ? (
+                                <img src={intro.pendingUpdate?.images?.profileUrl || intro.images.profileUrl} alt={intro.pendingUpdate?.basicInfo?.name || intro.basicInfo.name} className="h-full w-full object-cover" />
                             ) : (
                                 <div className="h-full w-full flex items-center justify-center text-slate-600 font-bold">?</div>
                             )}
                         </div>
                         <div>
                             <div className="flex items-center gap-3 mb-1">
-                                <h3 className="font-bold text-xl text-white hover:text-rose-400 transition-colors cursor-pointer" onClick={() => window.open(`/profile/${intro.uid}`, '_blank')}>
-                                    {intro.basicInfo.name}
+                                <h3 className="font-bold text-xl text-white hover:text-rose-400 transition-colors cursor-pointer flex items-center gap-2" onClick={() => window.open(`/profile/${intro.uid}`, '_blank')}>
+                                    {intro.pendingUpdate?.basicInfo?.name || intro.basicInfo.name}
+                                    {intro.pendingUpdate && (
+                                        <Badge variant="outline" className="text-[10px] h-5 px-1.5 bg-yellow-500/20 text-yellow-300 border-yellow-500/30">
+                                            Edit
+                                        </Badge>
+                                    )}
                                 </h3>
                                 {type === "approved" && intro.approvedBy && (
                                     <Badge variant="outline" className="text-[10px] h-5 px-1.5 bg-green-500/20 text-green-300 border-green-500/30">
@@ -75,9 +80,9 @@ export function AdminIntroductionList({ introductions, onUpdateStatus, type }: A
                             </div>
 
                             <div className="text-sm text-slate-400 flex gap-2 items-center mb-2">
-                                <span className="capitalize">{intro.basicInfo.gender.join(", ")}</span>
+                                <span className="capitalize">{(intro.pendingUpdate?.basicInfo?.gender || intro.basicInfo.gender).join(", ")}</span>
                                 <span className="w-1 h-1 rounded-full bg-slate-600" />
-                                <span>{intro.basicInfo.country}</span>
+                                <span>{intro.pendingUpdate?.basicInfo?.country || intro.basicInfo.country}</span>
                             </div>
 
                             {type === "rejected" && intro.rejectionReason && (

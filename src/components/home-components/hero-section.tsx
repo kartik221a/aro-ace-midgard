@@ -11,7 +11,7 @@ export default function HeroSection() {
     const { user } = useAuth();
 
     return (
-        <section className="relative w-full h-[80vh] flex flex-col items-center justify-center pt-24 md:pt-0 overflow-hidden">
+        <section className="relative w-full min-h-[90vh] md:h-screen flex flex-col items-center justify-center pt-28 pb-12 md:pt-16 md:pb-0 overflow-hidden">
             {/* Background Orb */}
             <div className="absolute inset-0 z-0">
                 <Orb
@@ -41,7 +41,7 @@ export default function HeroSection() {
                     className="text-lg md:text-xl max-w-2xl mx-auto leading-relaxed text-slate-300"
                 />
 
-                <div className="flex flex-col sm:flex-row gap-6 mt-8">
+                <div className="flex flex-col sm:flex-row gap-4 md:gap-6 mt-6 md:mt-8">
                     <Link href={user ? "/browse" : "/login"}>
                         <StarBorder as="button" className="text-white">
                             Browse Introductions

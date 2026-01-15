@@ -67,25 +67,31 @@ export function PhasedIntroductionForm({ initialData, onSuccess }: PhasedIntrodu
     const [saving, setSaving] = useState(false);
 
     // Initial State
-    const [data, setData] = useState<Partial<Introduction>>(() => initialData || {
-        images: { gallery: [] },
-        basicInfo: { name: "", gender: [] },
-        identity: { ethnicity: [], languages: [], height: { ft: "0", in: "0", cm: 0 } },
-        lookingFor: {
-            intent: "friends",
-            friends: { ageRange: [18, 60], gender: [] },
-            personal: {},
-            partner: { ageRange: [18, 60], gender: [], sexDesire: [], romanceDesire: [] },
-            toggles: { hasKids: false, isTaken: false }
-        },
-        lifestyle: {},
-        longDescription: [{ id: "about_me", title: "About Me", content: "" }]
+    const [data, setData] = useState<Partial<Introduction>>(() => {
+        if (initialData) {
+            // If there's a pending update, we want to edit THAT, not the old approved version
+            return { ...initialData, ...(initialData.pendingUpdate || {}) };
+        }
+        return {
+            images: { gallery: [] },
+            basicInfo: { name: "", gender: [] },
+            identity: { ethnicity: [], languages: [], height: { ft: "0", in: "0", cm: 0 } },
+            lookingFor: {
+                intent: "friends",
+                friends: { ageRange: [18, 60], gender: [] },
+                personal: {},
+                partner: { ageRange: [18, 60], gender: [], sexDesire: [], romanceDesire: [] },
+                toggles: { hasKids: false, isTaken: false }
+            },
+            lifestyle: {},
+            longDescription: [{ id: "about_me", title: "About Me", content: "" }]
+        };
     });
 
     // Update local state if initialData changes (e.g. re-fetching or switching modes)
     useEffect(() => {
         if (initialData) {
-            setData(initialData);
+            setData({ ...initialData, ...(initialData.pendingUpdate || {}) });
         }
     }, [initialData]);
 
@@ -110,16 +116,40 @@ export function PhasedIntroductionForm({ initialData, onSuccess }: PhasedIntrodu
         setSaving(true);
         try {
             const isAdmin = userData?.role === "admin";
-            // If admin is "submitting" (not draft), status is approved. Everyone else is pending.
-            const status = draft ? (userData?.role === "admin" ? "approved" : "pending") : (userData?.role === "admin" ? "approved" : "pending");
+            const isApproved = initialData?.status === "approved";
 
-            await setDoc(doc(db, "introductions", user.uid), {
-                ...data,
+            let updatePayload: any = {
                 updatedAt: serverTimestamp(),
-                createdAt: data.createdAt || serverTimestamp(), // Keep original createdAt if editing
                 uid: user.uid,
-                status: status
-            }, { merge: true });
+                status: isAdmin ? "approved" : "pending"
+            };
+
+            // Versioning Logic
+            if (!isAdmin && isApproved) {
+                // If already approved, store changes in pendingUpdate
+                // We exclude admin fields and status from the update itself
+                const { status, approvedBy, rejectedBy, reviewedAt, rejectionReason, pendingUpdate, ...cleanData } = data as Introduction;
+                updatePayload.pendingUpdate = {
+                    ...cleanData,
+                    updatedAt: Date.now()
+                };
+            } else {
+                // New profile, currently rejected, or Admin bypass
+                updatePayload = {
+                    ...updatePayload,
+                    ...data,
+                    createdAt: data.createdAt || serverTimestamp(),
+                    pendingUpdate: null // Clear any pending update on direct publish
+                };
+
+                // If admin approved, clear rejection info
+                if (isAdmin) {
+                    updatePayload.rejectedBy = null;
+                    updatePayload.rejectionReason = null;
+                }
+            }
+
+            await setDoc(doc(db, "introductions", user.uid), updatePayload, { merge: true });
 
             if (!draft && onSuccess) {
                 onSuccess();
