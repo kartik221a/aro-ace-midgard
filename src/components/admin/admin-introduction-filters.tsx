@@ -5,14 +5,9 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Search, X, Filter } from "lucide-react";
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select";
-import { MultiSelect, Option } from "@/components/ui/multi-select";
+import { SearchableSelect } from "@/components/ui/searchable-select";
+import { SearchableMultiSelect } from "@/components/ui/searchable-multi-select";
+import { Option } from "@/components/ui/multi-select";
 import * as C from "@/lib/constants";
 
 export interface IntroFilterState {
@@ -68,34 +63,27 @@ export function AdminIntroductionFilters({ filters, setFilters, totalResults }: 
                     </div>
                 </div>
 
-                {/* Looking For */}
                 <div className="space-y-2">
                     <Label className="text-slate-300 text-xs">Looking For</Label>
-                    <Select
+                    <SearchableSelect
                         value={filters.intents[0] || "all"}
-                        onValueChange={(val) => update("intents", val === "all" ? [] : [val])}
-                    >
-                        <SelectTrigger className="h-9 bg-white/5 border-white/10 text-slate-200">
-                            <SelectValue placeholder="Any Intent" />
-                        </SelectTrigger>
-                        <SelectContent className="bg-[#1a1d2d] border-white/10 text-slate-200">
-                            <SelectItem value="all">Any Intent</SelectItem>
-                            <SelectItem value="friends">Friends</SelectItem>
-                            <SelectItem value="relationship">Relationship</SelectItem>
-                            <SelectItem value="both">Both</SelectItem>
-                        </SelectContent>
-                    </Select>
+                        onChange={(val) => update("intents", val === "all" ? [] : [val])}
+                        options={[
+                            { label: "Any Intent", value: "all" },
+                            { label: "Friends", value: "friends" },
+                            { label: "Relationship", value: "relationship" },
+                            { label: "Both", value: "both" },
+                        ]}
+                    />
                 </div>
 
-                {/* Gender */}
                 <div className="space-y-2">
                     <Label className="text-slate-300 text-xs">Gender</Label>
-                    <MultiSelect
+                    <SearchableMultiSelect
                         options={toOptions(C.GENDER_OPTIONS)}
                         selected={filters.genders}
                         onChange={(val) => update("genders", val)}
                         placeholder="Any Gender"
-                        className="bg-white/5 border-white/10 text-slate-200"
                     />
                 </div>
 

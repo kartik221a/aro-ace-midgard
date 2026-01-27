@@ -7,7 +7,8 @@ export const PRONOUN_OPTIONS = [
 ];
 
 export const ETHNICITY_OPTIONS = [
-    "Black", "Caucasian/White", "Asian", "Indian", "Native American", "Middle Eastern"
+    "Black", "Caucasian/White", "Hispanic/Latin", "Middle Eastern",
+    "Native American", "Pacific Islander", "Asian", "Indian", "Other"
 ];
 
 export const SEXUAL_ORIENTATION_OPTIONS = [
@@ -27,11 +28,14 @@ export const ROMANTIC_ORIENTATION_OPTIONS = [
 ];
 
 export const DIET_OPTIONS = [
-    "prefer not to say", "omnivore", "vegetarian", "flexitarian"
+    "prefer not to say", "omnivore", "vegetarian", "flexitarian",
+    "pescatarian", "pollotarian", "vegan", "gluten free",
+    "kosher", "halal", "jain", "ketogenic"
 ];
 
 export const BUILD_OPTIONS = [
-    "prefer not to say", "average build", "thin", "overweight", "jacked", "a little extra"
+    "prefer not to say", "thin", "overweight", "average build",
+    "fit", "jacked", "a little extra", "curvy", "full figured", "plus size"
 ];
 
 export const INTENT_OPTIONS = [

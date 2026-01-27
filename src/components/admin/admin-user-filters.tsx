@@ -5,13 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Search, X, Filter } from "lucide-react";
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select";
+import { SearchableSelect } from "@/components/ui/searchable-select";
 
 export interface UserFilterState {
     searchTerm: string;
@@ -64,40 +58,30 @@ export function AdminUserFilters({ filters, setFilters, totalResults }: AdminUse
                     </div>
                 </div>
 
-                {/* Role */}
                 <div className="space-y-2">
                     <Label className="text-slate-300 text-xs">Account Role</Label>
-                    <Select
+                    <SearchableSelect
                         value={filters.role}
-                        onValueChange={(val) => update("role", val)}
-                    >
-                        <SelectTrigger className="h-9 bg-white/5 border-white/10 text-slate-200">
-                            <SelectValue placeholder="Any Role" />
-                        </SelectTrigger>
-                        <SelectContent className="bg-[#1a1d2d] border-white/10 text-slate-200">
-                            <SelectItem value="all">Any Role</SelectItem>
-                            <SelectItem value="user">User</SelectItem>
-                            <SelectItem value="admin">Admin</SelectItem>
-                        </SelectContent>
-                    </Select>
+                        onChange={(val) => update("role", val)}
+                        options={[
+                            { label: "Any Role", value: "all" },
+                            { label: "User", value: "user" },
+                            { label: "Admin", value: "admin" },
+                        ]}
+                    />
                 </div>
 
-                {/* Status */}
                 <div className="space-y-2">
                     <Label className="text-slate-300 text-xs">Account Status</Label>
-                    <Select
+                    <SearchableSelect
                         value={filters.status}
-                        onValueChange={(val) => update("status", val)}
-                    >
-                        <SelectTrigger className="h-9 bg-white/5 border-white/10 text-slate-200">
-                            <SelectValue placeholder="Any Status" />
-                        </SelectTrigger>
-                        <SelectContent className="bg-[#1a1d2d] border-white/10 text-slate-200">
-                            <SelectItem value="all">Any Status</SelectItem>
-                            <SelectItem value="active">Active</SelectItem>
-                            <SelectItem value="banned">Banned</SelectItem>
-                        </SelectContent>
-                    </Select>
+                        onChange={(val) => update("status", val)}
+                        options={[
+                            { label: "Any Status", value: "all" },
+                            { label: "Active", value: "active" },
+                            { label: "Banned", value: "banned" },
+                        ]}
+                    />
                 </div>
 
                 <Button
