@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
-import { collection, getDocs, doc, writeBatch, query, where } from "firebase/firestore";
+import { collection, getDocs, doc, writeBatch, query, where, getDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase/client";
 import { UserData } from "@/types";
 import { Badge } from "@/components/ui/badge";
@@ -255,14 +255,43 @@ export function AdminUserManagement() {
                                 if (!deleteConfirmUid || !db) return;
                                 setIsDeleting(true);
                                 try {
-                                    const batch = writeBatch(db);
                                     const uid = deleteConfirmUid;
+
+                                    // 0. Fetch user's profile to get image URLs for Cloudinary cleanup
+                                    const introRef = doc(db, "introductions", uid);
+                                    const introSnap = await getDoc(introRef);
+                                    if (introSnap.exists()) {
+                                        const introData = introSnap.data();
+                                        const imageUrls: string[] = [];
+
+                                        if (introData.images?.profileUrl) imageUrls.push(introData.images.profileUrl);
+                                        if (introData.images?.coverUrl) imageUrls.push(introData.images.coverUrl);
+                                        if (introData.images?.gallery && Array.isArray(introData.images.gallery)) {
+                                            imageUrls.push(...introData.images.gallery);
+                                        }
+
+                                        if (imageUrls.length > 0) {
+                                            console.log(`[Admin] Cleaning up ${imageUrls.length} images from Cloudinary...`);
+                                            try {
+                                                await fetch("/api/cloudinary/delete", {
+                                                    method: "POST",
+                                                    headers: { "Content-Type": "application/json" },
+                                                    body: JSON.stringify({ urls: imageUrls }),
+                                                });
+                                            } catch (cloudinaryError) {
+                                                console.error("[Admin] Cloudinary cleanup failed:", cloudinaryError);
+                                                // We continue anyway to ensure the user is deleted from DB
+                                            }
+                                        }
+                                    }
+
+                                    const batch = writeBatch(db);
 
                                     // 1. Delete basic user record
                                     batch.delete(doc(db, "users", uid));
 
                                     // 2. Delete introduction profile
-                                    batch.delete(doc(db, "introductions", uid));
+                                    batch.delete(introRef);
 
                                     // 3. Delete likes (outgoing)
                                     const outLikes = await getDocs(query(collection(db, "likes"), where("fromUserId", "==", uid)));

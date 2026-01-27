@@ -182,10 +182,26 @@ export function ImageUploader({ images, onChange, maxImages = 5, showMainLabel =
         });
     };
 
-    const removeImage = (index: number) => {
+    const removeImage = async (index: number) => {
+        const urlToRemove = images[index];
         const newImages = [...images];
         newImages.splice(index, 1);
         onChange(newImages);
+
+        // Attempt Cloudinary deletion in background
+        try {
+            console.log(`[Cloudinary] Requesting deletion for: ${urlToRemove}`);
+            const response = await fetch("/api/cloudinary/delete", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ urls: [urlToRemove] }),
+            });
+            if (!response.ok) {
+                console.error("[Cloudinary] Deletion failed on server");
+            }
+        } catch (error) {
+            console.error("[Cloudinary] Network error during deletion:", error);
+        }
     };
 
     const handleDragEnd = (event: DragEndEvent) => {
