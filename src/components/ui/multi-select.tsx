@@ -36,15 +36,17 @@ export function MultiSelect({
     const [open, setOpen] = React.useState(false);
 
     const toggleValue = (value: string) => {
+        const safeSelected = Array.isArray(selected) ? selected : [];
         onChange(
-            selected.includes(value)
-                ? selected.filter((v) => v !== value)
-                : [...selected, value]
+            safeSelected.includes(value)
+                ? safeSelected.filter((v) => v !== value)
+                : [...safeSelected, value]
         );
     };
 
     const handleUnselect = (value: string) => {
-        onChange(selected.filter((v) => v !== value));
+        const safeSelected = Array.isArray(selected) ? selected : [];
+        onChange(safeSelected.filter((v) => v !== value));
     };
 
     return (
@@ -60,7 +62,7 @@ export function MultiSelect({
                     )}
                 >
                     <div className="flex flex-wrap gap-1">
-                        {selected.length > 0 ? (
+                        {Array.isArray(selected) && selected.length > 0 ? (
                             selected.map((value) => {
                                 const option = options.find((o) => o.value === value);
                                 return (
@@ -105,7 +107,7 @@ export function MultiSelect({
                         >
                             <Checkbox
                                 id={`option-${option.value}`}
-                                checked={selected.includes(option.value)}
+                                checked={Array.isArray(selected) && selected.includes(option.value)}
                                 onCheckedChange={() => toggleValue(option.value)}
                             />
                             <label

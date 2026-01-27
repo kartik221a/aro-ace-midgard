@@ -153,8 +153,8 @@ export function ProfileDisplay({ introduction, isOwnProfile, headerActions, topO
 
                         {/* Text Info */}
                         <div className="flex-1 pb-1 md:pb-2">
-                            <h1 className="text-2xl md:text-6xl font-black mb-1 md:mb-3 tracking-tight text-white leading-tight">{basicInfo?.name}</h1>
-                            <div className="flex flex-wrap items-center justify-center md:justify-start gap-x-3 md:gap-x-6 gap-y-0.5 md:gap-y-2 text-sm md:text-xl font-bold text-slate-400">
+                            <h1 className="text-2xl md:text-5xl font-black mb-1 md:mb-3 tracking-tight text-white leading-tight">{basicInfo?.name}</h1>
+                            <div className="flex flex-wrap items-center justify-center md:justify-start gap-x-3 md:gap-x-6 gap-y-0.5 md:gap-y-2 text-sm md:text-lg font-bold text-slate-400">
                                 {age && <span>{age} Years</span>}
                                 <span className="hidden md:block opacity-30">•</span>
                                 <span className="capitalize">{basicInfo?.gender?.join(", ")}</span>
@@ -206,12 +206,12 @@ export function ProfileDisplay({ introduction, isOwnProfile, headerActions, topO
                     {longDescription && longDescription.length > 0 ? (
                         longDescription.map((section) => (
                             <div key={section.id} className="group">
-                                <h2 className="text-xl md:text-3xl font-black mb-3 md:mb-8 flex items-center gap-3 md:gap-5 text-white">
-                                    <span className="w-1.5 h-6 md:w-2.5 md:h-10 bg-purple-600 rounded-full group-hover:h-8 md:group-hover:h-12 transition-all" />
+                                <h2 className="text-lg md:text-2xl font-black mb-3 md:mb-6 flex items-center gap-3 md:gap-4 text-white">
+                                    <span className="w-1.5 h-6 md:w-2 md:h-8 bg-purple-600 rounded-full group-hover:h-8 md:group-hover:h-10 transition-all" />
                                     {section.title}
                                 </h2>
-                                <div className="bg-white/[0.03] backdrop-blur-md border border-white/10 rounded-xl md:rounded-[2rem] p-5 md:p-12 shadow-2xl shadow-indigo-500/5 hover:border-white/20 transition-colors">
-                                    <p className="text-base md:text-xl text-slate-300 leading-relaxed whitespace-pre-wrap font-medium">
+                                <div className="bg-white/[0.03] backdrop-blur-md border border-white/10 rounded-xl md:rounded-[2rem] p-5 md:p-8 shadow-2xl shadow-indigo-500/5 hover:border-white/20 transition-colors">
+                                    <p className="text-sm md:text-base text-slate-300 leading-relaxed whitespace-pre-wrap font-medium">
                                         {section.content}
                                     </p>
                                 </div>
@@ -229,17 +229,17 @@ export function ProfileDisplay({ introduction, isOwnProfile, headerActions, topO
 
                     {/* 1. Identity Snapshot Card */}
                     <SpotlightCard className="bg-white/5 backdrop-blur-md rounded-2xl md:rounded-[2rem] border border-white/10 overflow-hidden shadow-2xl" spotlightColor="rgba(139, 92, 246, 0.15)">
-                        <div className="bg-gradient-to-r from-cyan-600/30 via-blue-600/10 to-transparent p-5 md:p-7 border-b border-cyan-500/20">
-                            <h3 className="text-lg md:text-xl font-black text-cyan-400 flex items-center gap-3 md:gap-4">
-                                <span className="w-1 md:w-1.5 h-5 md:h-6 bg-cyan-500 rounded-full shadow-[0_0_15px_rgba(6,182,212,0.5)]" />
+                        <div className="bg-gradient-to-r from-cyan-600/30 via-blue-600/10 to-transparent p-4 md:p-6 border-b border-cyan-500/20">
+                            <h3 className="text-base md:text-lg font-black text-cyan-400 flex items-center gap-3 md:gap-4">
+                                <span className="w-1 md:w-1.5 h-4 md:h-5 bg-cyan-500 rounded-full shadow-[0_0_15px_rgba(6,182,212,0.5)]" />
                                 Identity Snapshot
                             </h3>
                         </div>
                         <div className="p-2 md:p-5 space-y-0.5 md:space-y-2">
                             <DetailRow label="Pronouns" value={identity?.pronouns} />
                             <DetailRow label="Ethnicity" value={identity?.ethnicity?.join(", ")} />
-                            <DetailRow label="Sexual Orientation" value={identity?.sexualOrientation} />
-                            <DetailRow label="Romantic Orientation" value={identity?.romanticOrientation} />
+                            <DetailRow label="Sexual Orientation" value={Array.isArray(identity?.sexualOrientation) ? identity?.sexualOrientation.join(", ") : identity?.sexualOrientation} />
+                            <DetailRow label="Romantic Orientation" value={Array.isArray(identity?.romanticOrientation) ? identity?.romanticOrientation.join(", ") : identity?.romanticOrientation} />
                             <DetailRow label="Diet" value={identity?.diet} />
                             <DetailRow label="Build" value={identity?.build} />
                             <DetailRow label="Height" value={identity?.height ? `${identity.height.ft}'${identity.height.in} (${identity.height.cm}cm)` : undefined} />
@@ -272,9 +272,9 @@ export function ProfileDisplay({ introduction, isOwnProfile, headerActions, topO
                                     )}
                                     spotlightColor="rgba(244, 63, 94, 0.2)"
                                 >
-                                    <div className="bg-gradient-to-r from-rose-600/30 via-pink-600/10 to-transparent p-5 md:p-7 border-b border-rose-500/20">
-                                        <h3 className="text-lg md:text-xl font-black text-rose-400 flex items-center gap-3 md:gap-4">
-                                            <span className="w-1 md:w-1.5 h-5 md:h-6 bg-rose-500 rounded-full shadow-[0_0_15px_rgba(244,63,94,0.5)]" />
+                                    <div className="bg-gradient-to-r from-rose-600/30 via-pink-600/10 to-transparent p-4 md:p-6 border-b border-rose-500/20">
+                                        <h3 className="text-base md:text-lg font-black text-rose-400 flex items-center gap-3 md:gap-4">
+                                            <span className="w-1 md:w-1.5 h-4 md:h-5 bg-rose-500 rounded-full shadow-[0_0_15px_rgba(244,63,94,0.5)]" />
                                             Me In Relationship
                                         </h3>
                                     </div>
@@ -300,9 +300,9 @@ export function ProfileDisplay({ introduction, isOwnProfile, headerActions, topO
                                     )}
                                     spotlightColor="rgba(244, 63, 94, 0.2)"
                                 >
-                                    <div className="bg-gradient-to-r from-rose-600/30 via-pink-600/10 to-transparent p-5 md:p-7 border-b border-rose-500/20">
-                                        <h3 className="text-lg md:text-xl font-black text-rose-400 flex items-center gap-3 md:gap-4">
-                                            <span className="w-1 md:w-1.5 h-5 md:h-6 bg-rose-500 rounded-full shadow-[0_0_15px_rgba(244,63,94,0.5)]" />
+                                    <div className="bg-gradient-to-r from-rose-600/30 via-pink-600/10 to-transparent p-4 md:p-6 border-b border-rose-500/20">
+                                        <h3 className="text-base md:text-lg font-black text-rose-400 flex items-center gap-3 md:gap-4">
+                                            <span className="w-1 md:w-1.5 h-4 md:h-5 bg-rose-500 rounded-full shadow-[0_0_15px_rgba(244,63,94,0.5)]" />
                                             Partner Preference
                                         </h3>
                                     </div>
@@ -327,9 +327,9 @@ export function ProfileDisplay({ introduction, isOwnProfile, headerActions, topO
                         {/* Friends Section */}
                         {(lookingFor?.intent === "friends" || lookingFor?.intent === "both") && (
                             <SpotlightCard className="bg-emerald-500/[0.08] rounded-2xl md:rounded-[2rem] border border-emerald-500/20 overflow-hidden shadow-2xl transition-transform hover:scale-[1.01]" spotlightColor="rgba(16, 185, 129, 0.2)">
-                                <div className="bg-gradient-to-r from-emerald-600/30 via-teal-600/10 to-transparent p-5 md:p-7 border-b border-emerald-500/20">
-                                    <h3 className="text-lg md:text-xl font-black text-emerald-400 flex items-center gap-3 md:gap-4">
-                                        <span className="w-1 md:w-1.5 h-5 md:h-6 bg-emerald-500 rounded-full shadow-[0_0_15px_rgba(16,185,129,0.5)]" />
+                                <div className="bg-gradient-to-r from-emerald-600/30 via-teal-600/10 to-transparent p-4 md:p-6 border-b border-emerald-500/20">
+                                    <h3 className="text-base md:text-lg font-black text-emerald-400 flex items-center gap-3 md:gap-4">
+                                        <span className="w-1 md:w-1.5 h-4 md:h-5 bg-emerald-500 rounded-full shadow-[0_0_15px_rgba(16,185,129,0.5)]" />
                                         Friendship Prefs
                                     </h3>
                                 </div>
@@ -343,9 +343,9 @@ export function ProfileDisplay({ introduction, isOwnProfile, headerActions, topO
 
                     {/* 3. Lifestyle Details Card */}
                     <SpotlightCard className="bg-white/5 backdrop-blur-md rounded-2xl md:rounded-[2rem] border border-white/10 overflow-hidden shadow-2xl" spotlightColor="rgba(59, 130, 246, 0.15)">
-                        <div className="bg-gradient-to-r from-indigo-600/30 via-purple-600/10 to-transparent p-5 md:p-7 border-b border-white/10">
-                            <h3 className="text-lg md:text-xl font-black text-white flex items-center gap-3 md:gap-4">
-                                <span className="w-1 md:w-1.5 h-5 md:h-6 bg-indigo-500 rounded-full shadow-[0_0_15px_rgba(99,102,241,0.5)]" />
+                        <div className="bg-gradient-to-r from-indigo-600/30 via-purple-600/10 to-transparent p-4 md:p-6 border-b border-white/10">
+                            <h3 className="text-base md:text-lg font-black text-white flex items-center gap-3 md:gap-4">
+                                <span className="w-1 md:w-1.5 h-4 md:h-5 bg-indigo-500 rounded-full shadow-[0_0_15px_rgba(99,102,241,0.5)]" />
                                 Lifestyle
                             </h3>
                         </div>
@@ -362,9 +362,9 @@ export function ProfileDisplay({ introduction, isOwnProfile, headerActions, topO
                         </div>
 
                         {lifestyle?.interests && (
-                            <div className="mt-4 md:mt-10 pt-4 md:pt-8 border-t border-white/10 px-4 md:px-8 pb-6 md:pb-12">
-                                <h4 className="text-[9px] md:text-base font-black text-slate-500 uppercase tracking-[0.1em] md:tracking-[0.1em] mb-2 md:mb-4">Interests</h4>
-                                <p className="text-sm md:text-lg text-slate-300 font-medium leading-relaxed whitespace-pre-wrap">
+                            <div className="mt-4 md:mt-8 pt-4 md:pt-6 border-t border-white/10 px-4 md:px-6 pb-6 md:pb-8">
+                                <h4 className="text-[10px] md:text-xs font-black text-slate-500 uppercase tracking-widest mb-2 md:mb-3">Interests</h4>
+                                <p className="text-sm md:text-base text-slate-300 font-medium leading-relaxed whitespace-pre-wrap">
                                     {lifestyle.interests}
                                 </p>
                             </div>
@@ -381,9 +381,9 @@ export function ProfileDisplay({ introduction, isOwnProfile, headerActions, topO
 function DetailRow({ label, value }: { label: string; value?: string | number }) {
     if (!value || value === "") return null;
     return (
-        <div className="flex justify-between items-center p-2 md:p-4 hover:bg-white/[0.07] transition-all rounded-lg md:rounded-2xl group/row">
-            <span className="text-[9px] md:text-base font-black text-slate-500 uppercase tracking-[0.1em] md:tracking-[0.1em] group-hover/row:text-slate-400 transition-colors shrink mr-2 md:mr-8 whitespace-nowrap overflow-hidden text-ellipsis">{label}</span>
-            <span className="font-black text-slate-100 text-right leading-tight text-xs md:text-base ml-2">{value}</span>
+        <div className="flex justify-between items-center p-3 md:p-4 hover:bg-white/[0.07] transition-all rounded-lg md:rounded-xl group/row">
+            <span className="text-[10px] md:text-xs font-black text-slate-500 uppercase tracking-widest group-hover/row:text-slate-400 transition-colors shrink mr-2 md:mr-4 whitespace-nowrap overflow-hidden text-ellipsis">{label}</span>
+            <span className="font-black text-slate-200 text-right leading-tight text-xs md:text-sm ml-2">{value}</span>
         </div>
     );
 }
@@ -391,9 +391,9 @@ function DetailRow({ label, value }: { label: string; value?: string | number })
 function StatRow({ label, value }: { label: string; value?: string | number }) {
     if (!value || value === "" || value === "Any") return null;
     return (
-        <div className="flex flex-col gap-1 md:gap-2.5 p-1">
-            <span className="text-[9px] md:text-base font-black text-slate-500 uppercase tracking-[0.15em] md:tracking-[0.15em]">{label}</span>
-            <span className="font-black text-slate-100 capitalize text-sm md:text-base leading-tight">{value}</span>
+        <div className="flex flex-col gap-1 md:gap-2 p-1">
+            <span className="text-[10px] md:text-xs font-black text-slate-500 uppercase tracking-widest">{label}</span>
+            <span className="font-black text-slate-200 capitalize text-xs md:text-sm leading-tight">{value}</span>
         </div>
     );
 }

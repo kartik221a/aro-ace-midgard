@@ -11,7 +11,7 @@ import { SplitText } from "@/components/ui/reactbits/split-text";
 export default function AdminUsersPage() {
     return (
         <AdminGuard>
-            <div className="min-h-screen pt-24 pb-20 px-4 md:px-8">
+            <div className="min-h-screen pt-24 pb-20 px-6 md:px-10 lg:px-12">
                 <div className="max-w-7xl mx-auto space-y-6">
                     <div className="flex items-center gap-4">
                         <Button variant="outline" size="icon" asChild className="rounded-full bg-white/10 text-white hover:bg-white/20 border border-white/40 hover:border-white/60 shadow-[0_0_15px_rgba(255,255,255,0.1)] backdrop-blur-md">

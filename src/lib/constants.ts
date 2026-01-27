@@ -11,11 +11,19 @@ export const ETHNICITY_OPTIONS = [
 ];
 
 export const SEXUAL_ORIENTATION_OPTIONS = [
-    "straight", "bisexual", "heterosexual", "demisexual", "asexual"
+    "straight", "asexual", "abrosexual", "gay", "androsexual", "gynesexual",
+    "ceterosexual", "lesbian", "omnisexual", "pansexual", "polysexual",
+    "bisexual", "heterosexual", "aceflux", "aegosexual", "apothisexual",
+    "autosexual", "cupiosexual", "demisexual", "fraysexual", "graysexual",
+    "lithosexual", "myrsexual"
 ];
 
 export const ROMANTIC_ORIENTATION_OPTIONS = [
-    "romantic", "aromantic", "biromantic", "hetero-romantic", "demiromantic"
+    "romantic", "aromantic", "abroromantic", "androromantic", "gyneromantic",
+    "ceteroromantic", "omniromantic", "panromantic", "polyromantic",
+    "biromantic", "heteroromantic", "aroflux", "aegoromantic", "apothiromantic",
+    "autoromantic", "cupioromantic", "demiromantic", "frayromantic",
+    "grayromantic", "lithoromantic", "myrromantic"
 ];
 
 export const DIET_OPTIONS = [

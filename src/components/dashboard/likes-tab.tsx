@@ -75,7 +75,7 @@ export function LikesTab() {
                         </div>
                     </div>
 
-                    <Link href={`/profile/${uid}`}>
+                    <Link href={`/profile/${basicInfo?.username || uid}`}>
                         <Button variant="ghost" size="sm" className="text-rose-600 hover:text-rose-700 hover:bg-rose-50">
                             View Profile <ArrowRight className="w-4 h-4 ml-1" />
                         </Button>

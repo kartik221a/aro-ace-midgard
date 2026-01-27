@@ -53,75 +53,82 @@ export function AdminIntroductionList({ introductions, onUpdateStatus, type }: A
     return (
         <div className="grid gap-4">
             {introductions.map((intro, index) => (
-                <SpotlightCard key={intro.uid} className="flex flex-col md:flex-row gap-6 items-start md:items-center justify-between p-6 rounded-2xl border border-white/10 bg-white/5" spotlightColor="rgba(255, 255, 255, 0.1)">
-                    <div className="flex items-center gap-5">
-                        <div className="h-16 w-16 rounded-full bg-white/5 overflow-hidden shrink-0 border border-white/10">
-                            {(intro.pendingUpdate?.images?.profileUrl || intro.images.profileUrl) ? (
-                                <img src={intro.pendingUpdate?.images?.profileUrl || intro.images.profileUrl} alt={intro.pendingUpdate?.basicInfo?.name || intro.basicInfo.name} className="h-full w-full object-cover" />
-                            ) : (
-                                <div className="h-full w-full flex items-center justify-center text-slate-600 font-bold">?</div>
-                            )}
-                        </div>
-                        <div>
-                            <div className="flex items-center gap-3 mb-1">
-                                <h3 className="font-bold text-xl text-white hover:text-rose-400 transition-colors cursor-pointer flex items-center gap-2" onClick={() => window.open(`/profile/${intro.uid}`, '_blank')}>
-                                    {intro.pendingUpdate?.basicInfo?.name || intro.basicInfo.name}
-                                    {intro.pendingUpdate && (
-                                        <Badge variant="outline" className="text-[10px] h-5 px-1.5 bg-yellow-500/20 text-yellow-300 border-yellow-500/30">
-                                            Edit
-                                        </Badge>
-                                    )}
-                                </h3>
-                                {type === "approved" && intro.approvedBy && (
-                                    <Badge variant="outline" className="text-[10px] h-5 px-1.5 bg-green-500/20 text-green-300 border-green-500/30">
-                                        Approved by {intro.approvedBy}
-                                    </Badge>
+                <SpotlightCard key={intro.uid} className="rounded-2xl border border-white/10 bg-white/5" spotlightColor="rgba(255, 255, 255, 0.1)">
+                    <div className="flex flex-col md:flex-row gap-6 items-start md:items-center justify-between p-6 md:p-8">
+                        <div className="flex items-center gap-5">
+                            <div className="h-16 w-16 rounded-full bg-white/5 overflow-hidden shrink-0 border border-white/10">
+                                {(intro.pendingUpdate?.images?.profileUrl || intro.images.profileUrl) ? (
+                                    <img src={intro.pendingUpdate?.images?.profileUrl || intro.images.profileUrl} alt={intro.pendingUpdate?.basicInfo?.name || intro.basicInfo.name} className="h-full w-full object-cover" />
+                                ) : (
+                                    <div className="h-full w-full flex items-center justify-center text-slate-600 font-bold">?</div>
                                 )}
                             </div>
-
-                            <div className="text-sm text-slate-400 flex gap-2 items-center mb-2">
-                                <span className="capitalize">{(intro.pendingUpdate?.basicInfo?.gender || intro.basicInfo.gender).join(", ")}</span>
-                                <span className="w-1 h-1 rounded-full bg-slate-600" />
-                                <span>{intro.pendingUpdate?.basicInfo?.country || intro.basicInfo.country}</span>
-                            </div>
-
-                            {type === "rejected" && intro.rejectionReason && (
-                                <div className="mt-2 text-sm text-red-300 bg-red-500/10 border border-red-500/20 p-2 rounded-md flex items-start gap-2">
-                                    <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" />
-                                    <span>Reason: {intro.rejectionReason}</span>
+                            <div>
+                                <div className="flex items-center gap-3 mb-1">
+                                    <h3 className="font-bold text-xl text-white hover:text-rose-400 transition-colors cursor-pointer flex items-center gap-2" onClick={() => window.open(`/profile/${intro.uid}`, '_blank')}>
+                                        {intro.pendingUpdate?.basicInfo?.name || intro.basicInfo.name}
+                                        {intro.pendingUpdate && (
+                                            <Badge variant="outline" className="text-[10px] h-5 px-1.5 bg-yellow-500/20 text-yellow-300 border-yellow-500/30">
+                                                Edit
+                                            </Badge>
+                                        )}
+                                    </h3>
+                                    {type === "approved" && intro.approvedBy && (
+                                        <Badge variant="outline" className="text-[10px] h-5 px-1.5 bg-green-500/20 text-green-300 border-green-500/30">
+                                            Approved by {intro.approvedBy}
+                                        </Badge>
+                                    )}
+                                    {type === "approved" && intro.pendingUpdate && (
+                                        <Badge variant="outline" className="text-[10px] h-5 px-1.5 bg-yellow-500/20 text-yellow-300 border-yellow-500/30 animate-pulse">
+                                            Pending Changes
+                                        </Badge>
+                                    )}
                                 </div>
+
+                                <div className="text-sm text-slate-400 flex gap-2 items-center mb-2">
+                                    <span className="capitalize">{(intro.pendingUpdate?.basicInfo?.gender || intro.basicInfo.gender).join(", ")}</span>
+                                    <span className="w-1 h-1 rounded-full bg-slate-600" />
+                                    <span>{intro.pendingUpdate?.basicInfo?.country || intro.basicInfo.country}</span>
+                                </div>
+
+                                {type === "rejected" && intro.rejectionReason && (
+                                    <div className="mt-2 text-sm text-red-300 bg-red-500/10 border border-red-500/20 p-2 rounded-md flex items-start gap-2">
+                                        <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" />
+                                        <span>Reason: {intro.rejectionReason}</span>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+
+                        <div className="flex flex-wrap items-center gap-3 w-full md:w-auto mt-2 md:mt-0">
+                            <MagnetButton className="h-9 px-3 rounded-lg border border-white/10 bg-transparent text-slate-300 hover:bg-white/10 hover:text-white flex items-center justify-center text-sm" onClick={() => window.open(`/profile/${intro.basicInfo?.username || intro.uid}`, '_blank')} strength={10}>
+                                <ExternalLink className="w-4 h-4 mr-2" /> View
+                            </MagnetButton>
+
+                            {/* Actions based on type */}
+                            {type === "pending" && (
+                                <>
+                                    <MagnetButton className="h-9 px-3 rounded-lg bg-gradient-to-r from-green-600 to-emerald-600 text-white border-none shadow-lg shadow-green-500/20 flex items-center justify-center text-sm" onClick={() => onUpdateStatus(intro.uid, "approved")} strength={10}>
+                                        <Check className="w-4 h-4 mr-2" /> Approve
+                                    </MagnetButton>
+                                    <MagnetButton className="h-9 px-3 rounded-lg bg-red-500/20 text-red-300 border border-red-500/30 hover:bg-red-500/30 hover:text-red-200 flex items-center justify-center text-sm" onClick={() => handleRejectClick(intro.uid)} strength={10}>
+                                        <X className="w-4 h-4 mr-2" /> Reject
+                                    </MagnetButton>
+                                </>
+                            )}
+
+                            {type === "approved" && (
+                                <MagnetButton className="h-9 px-3 rounded-lg bg-red-500/10 text-red-400 border border-red-500/20 hover:bg-red-500/20 flex items-center justify-center text-sm" onClick={() => handleRejectClick(intro.uid)} strength={10}>
+                                    <X className="w-4 h-4 mr-2" /> Revoke
+                                </MagnetButton>
+                            )}
+
+                            {type === "rejected" && (
+                                <MagnetButton className="h-9 px-3 rounded-lg border border-white/10 bg-transparent text-slate-300 hover:bg-white/10 flex items-center justify-center text-sm" onClick={() => onUpdateStatus(intro.uid, "pending")} strength={10}>
+                                    <RotateCcw className="w-4 h-4 mr-2" /> Reconsider
+                                </MagnetButton>
                             )}
                         </div>
-                    </div>
-
-                    <div className="flex flex-wrap items-center gap-3 w-full md:w-auto mt-2 md:mt-0">
-                        <MagnetButton className="h-9 px-3 rounded-lg border border-white/10 bg-transparent text-slate-300 hover:bg-white/10 hover:text-white flex items-center justify-center text-sm" onClick={() => window.open(`/profile/${intro.uid}`, '_blank')} strength={10}>
-                            <ExternalLink className="w-4 h-4 mr-2" /> View
-                        </MagnetButton>
-
-                        {/* Actions based on type */}
-                        {type === "pending" && (
-                            <>
-                                <MagnetButton className="h-9 px-3 rounded-lg bg-gradient-to-r from-green-600 to-emerald-600 text-white border-none shadow-lg shadow-green-500/20 flex items-center justify-center text-sm" onClick={() => onUpdateStatus(intro.uid, "approved")} strength={10}>
-                                    <Check className="w-4 h-4 mr-2" /> Approve
-                                </MagnetButton>
-                                <MagnetButton className="h-9 px-3 rounded-lg bg-red-500/20 text-red-300 border border-red-500/30 hover:bg-red-500/30 hover:text-red-200 flex items-center justify-center text-sm" onClick={() => handleRejectClick(intro.uid)} strength={10}>
-                                    <X className="w-4 h-4 mr-2" /> Reject
-                                </MagnetButton>
-                            </>
-                        )}
-
-                        {type === "approved" && (
-                            <MagnetButton className="h-9 px-3 rounded-lg bg-red-500/10 text-red-400 border border-red-500/20 hover:bg-red-500/20 flex items-center justify-center text-sm" onClick={() => handleRejectClick(intro.uid)} strength={10}>
-                                <X className="w-4 h-4 mr-2" /> Revoke
-                            </MagnetButton>
-                        )}
-
-                        {type === "rejected" && (
-                            <MagnetButton className="h-9 px-3 rounded-lg border border-white/10 bg-transparent text-slate-300 hover:bg-white/10 flex items-center justify-center text-sm" onClick={() => onUpdateStatus(intro.uid, "pending")} strength={10}>
-                                <RotateCcw className="w-4 h-4 mr-2" /> Reconsider
-                            </MagnetButton>
-                        )}
                     </div>
                 </SpotlightCard>
             ))}

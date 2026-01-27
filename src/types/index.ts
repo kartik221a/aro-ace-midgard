@@ -11,6 +11,7 @@ export interface UserData {
     uid: string;
     email: string;
     displayName: string;
+    username?: string;
     role: UserRole;
     isBanned?: boolean;
     banReason?: string;
@@ -25,6 +26,7 @@ export interface ImageSection {
 
 export interface BasicInfo {
     name: string;
+    username?: string;
     dob?: string; // ISO Date string
     country?: string;
     gender: string[]; // Multi-select
@@ -33,8 +35,8 @@ export interface BasicInfo {
 export interface IdentityDetails {
     pronouns?: string;
     ethnicity: string[];
-    sexualOrientation?: string;
-    romanticOrientation?: string;
+    sexualOrientation: string[];
+    romanticOrientation: string[];
     diet?: string;
     build?: string;
     height?: {

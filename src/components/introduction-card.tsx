@@ -52,7 +52,7 @@ export function IntroductionCard({ introduction, myLikeStatus, matchStatus, onTo
                     className="h-full w-full rounded-3xl"
                     innerClassName="h-full flex flex-col p-0 overflow-hidden bg-[#0f111a]/95 backdrop-blur-2xl rounded-[23px] transition-all duration-500 border border-white/5"
                 >
-                    <Link href={`/profile/${uid}`} className="block h-full group/card relative">
+                    <Link href={`/profile/${basicInfo?.username || uid}`} className="block h-full group/card relative">
                         <div className="relative h-64 bg-slate-900/50 overflow-hidden">
                             {images?.profileUrl ? (
                                 <img

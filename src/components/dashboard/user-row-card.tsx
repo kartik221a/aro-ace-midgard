@@ -86,7 +86,7 @@ export function UserRowCard({ user, type, status, onAction, actionLabel, classNa
                         </Button>
                     )}
 
-                    <Link href={`/profile/${uid}`}>
+                    <Link href={`/profile/${basicInfo?.username || uid}`}>
                         <Button variant="ghost" size="sm" className="text-slate-500 hover:text-slate-800">
                             View Profile <ArrowRight className="w-4 h-4 ml-1" />
                         </Button>

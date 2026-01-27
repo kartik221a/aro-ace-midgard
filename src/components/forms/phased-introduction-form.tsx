@@ -1,11 +1,12 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { doc, setDoc, serverTimestamp } from "firebase/firestore";
+import { doc, setDoc, getDoc, serverTimestamp, writeBatch, deleteDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase/client";
 import { useAuth } from "@/lib/auth-context";
 import { Introduction, LongDescriptionSection } from "@/types";
 import { useRouter } from "next/navigation";
+import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -65,17 +66,15 @@ export function PhasedIntroductionForm({ initialData, onSuccess }: PhasedIntrodu
     const router = useRouter();
     const [activePhase, setActivePhase] = useState(0);
     const [saving, setSaving] = useState(false);
+    const [usernameError, setUsernameError] = useState<string | null>(null);
+    const [isCheckingUsername, setIsCheckingUsername] = useState(false);
 
     // Initial State
     const [data, setData] = useState<Partial<Introduction>>(() => {
-        if (initialData) {
-            // If there's a pending update, we want to edit THAT, not the old approved version
-            return { ...initialData, ...(initialData.pendingUpdate || {}) };
-        }
-        return {
+        let baseData: Partial<Introduction> = {
             images: { gallery: [] },
             basicInfo: { name: "", gender: [] },
-            identity: { ethnicity: [], languages: [], height: { ft: "0", in: "0", cm: 0 } },
+            identity: { ethnicity: [], languages: [], sexualOrientation: [], romanticOrientation: [], height: { ft: "0", in: "0", cm: 0 } },
             lookingFor: {
                 intent: "friends",
                 friends: { ageRange: [18, 60], gender: [] },
@@ -86,12 +85,50 @@ export function PhasedIntroductionForm({ initialData, onSuccess }: PhasedIntrodu
             lifestyle: {},
             longDescription: [{ id: "about_me", title: "About Me", content: "" }]
         };
+
+        if (initialData) {
+            baseData = { ...initialData, ...(initialData.pendingUpdate || {}) };
+        }
+
+        // Robust normalization for orientation fields
+        if (baseData.identity) {
+            if (typeof baseData.identity.sexualOrientation === 'string') {
+                baseData.identity.sexualOrientation = [baseData.identity.sexualOrientation];
+            } else if (!baseData.identity.sexualOrientation) {
+                baseData.identity.sexualOrientation = [];
+            }
+
+            if (typeof baseData.identity.romanticOrientation === 'string') {
+                baseData.identity.romanticOrientation = [baseData.identity.romanticOrientation];
+            } else if (!baseData.identity.romanticOrientation) {
+                baseData.identity.romanticOrientation = [];
+            }
+        }
+
+        return baseData;
     });
 
     // Update local state if initialData changes (e.g. re-fetching or switching modes)
     useEffect(() => {
         if (initialData) {
-            setData({ ...initialData, ...(initialData.pendingUpdate || {}) });
+            const merged = { ...initialData, ...(initialData.pendingUpdate || {}) };
+
+            // Normalize here too
+            if (merged.identity) {
+                if (typeof merged.identity.sexualOrientation === 'string') {
+                    merged.identity.sexualOrientation = [merged.identity.sexualOrientation];
+                } else if (!merged.identity.sexualOrientation) {
+                    merged.identity.sexualOrientation = [];
+                }
+
+                if (typeof merged.identity.romanticOrientation === 'string') {
+                    merged.identity.romanticOrientation = [merged.identity.romanticOrientation];
+                } else if (!merged.identity.romanticOrientation) {
+                    merged.identity.romanticOrientation = [];
+                }
+            }
+
+            setData(merged);
         }
     }, [initialData]);
 
@@ -110,13 +147,64 @@ export function PhasedIntroductionForm({ initialData, onSuccess }: PhasedIntrodu
         }
     }, [data.identity?.height?.ft, data.identity?.height?.in]); // eslint-disable-line react-hooks/exhaustive-deps
 
+    const checkUsernameAvailability = async (username: string) => {
+        if (!db) return true;
+        const cleanUsername = username.trim().toLowerCase();
+        if (!cleanUsername) return true;
+        if (cleanUsername === initialData?.basicInfo?.username?.toLowerCase()) return true;
+
+        const docRef = doc(db, "usernames", cleanUsername);
+        const docSnap = await getDoc(docRef);
+        return !docSnap.exists();
+    };
+
+    const handleUsernameChange = async (val: string) => {
+        // Regex for valid username: 3-20 chars, alphanumeric, underscores, dots
+        const regex = /^[a-zA-Z0-9._]{3,20}$/;
+        const cleanVal = val.trim();
+
+        setData(prev => ({ ...prev, basicInfo: { ...prev.basicInfo!, username: cleanVal } }));
+
+        if (!cleanVal) {
+            setUsernameError(null);
+            return;
+        }
+
+        if (!regex.test(cleanVal)) {
+            setUsernameError("Username must be 3-20 characters and can only contain letters, numbers, underscores, or dots.");
+            return;
+        }
+
+        setIsCheckingUsername(true);
+        const isAvailable = await checkUsernameAvailability(cleanVal);
+        setIsCheckingUsername(false);
+
+        if (!isAvailable) {
+            setUsernameError("This username is already taken.");
+        } else {
+            setUsernameError(null);
+        }
+    };
+
 
     const handleSave = async (draft = true) => {
         if (!user || !db) return;
+
+        // Final username check if not a draft
+        if (!draft && data.basicInfo?.username) {
+            const isAvailable = await checkUsernameAvailability(data.basicInfo.username);
+            if (!isAvailable) {
+                setUsernameError("This username is already taken.");
+                setActivePhase(1); // Jump to basic info
+                return;
+            }
+        }
+
         setSaving(true);
         try {
             const isAdmin = userData?.role === "admin";
             const isApproved = initialData?.status === "approved";
+            const batch = writeBatch(db);
 
             let updatePayload: any = {
                 updatedAt: serverTimestamp(),
@@ -124,37 +212,75 @@ export function PhasedIntroductionForm({ initialData, onSuccess }: PhasedIntrodu
                 status: isAdmin ? "approved" : "pending"
             };
 
+            // Username management
+            const oldUsername = initialData?.basicInfo?.username?.toLowerCase();
+            const newUsername = data.basicInfo?.username?.toLowerCase();
+
+            if (newUsername && newUsername !== oldUsername) {
+                // Reserve new username
+                batch.set(doc(db, "usernames", newUsername), { uid: user.uid });
+                // Delete old username if it exists
+                if (oldUsername) {
+                    batch.delete(doc(db, "usernames", oldUsername));
+                }
+            }
+
             // Versioning Logic
             if (!isAdmin && isApproved) {
-                // If already approved, store changes in pendingUpdate
-                // We exclude admin fields and status from the update itself
                 const { status, approvedBy, rejectedBy, reviewedAt, rejectionReason, pendingUpdate, ...cleanData } = data as Introduction;
+
+                if (cleanData.identity) {
+                    if (typeof cleanData.identity.sexualOrientation === 'string') {
+                        cleanData.identity.sexualOrientation = [cleanData.identity.sexualOrientation];
+                    }
+                    if (typeof cleanData.identity.romanticOrientation === 'string') {
+                        cleanData.identity.romanticOrientation = [cleanData.identity.romanticOrientation];
+                    }
+                }
+
                 updatePayload.pendingUpdate = {
                     ...cleanData,
                     updatedAt: Date.now()
                 };
+
+                updatePayload.status = "pending";
             } else {
-                // New profile, currently rejected, or Admin bypass
+                const normalizedData = { ...data };
+                if (normalizedData.identity) {
+                    if (typeof normalizedData.identity.sexualOrientation === 'string') {
+                        normalizedData.identity.sexualOrientation = [normalizedData.identity.sexualOrientation];
+                    }
+                    if (typeof normalizedData.identity.romanticOrientation === 'string') {
+                        normalizedData.identity.romanticOrientation = [normalizedData.identity.romanticOrientation];
+                    }
+                }
+
                 updatePayload = {
                     ...updatePayload,
-                    ...data,
+                    ...normalizedData,
                     createdAt: data.createdAt || serverTimestamp(),
-                    pendingUpdate: null // Clear any pending update on direct publish
+                    pendingUpdate: null
                 };
 
-                // If admin approved, clear rejection info
                 if (isAdmin) {
                     updatePayload.rejectedBy = null;
                     updatePayload.rejectionReason = null;
                 }
             }
 
-            await setDoc(doc(db, "introductions", user.uid), updatePayload, { merge: true });
+            console.log("Saving profile with batch...");
+            batch.set(doc(db, "introductions", user.uid), updatePayload, { merge: true });
+
+            // Also update the users collection if username changed
+            if (newUsername && newUsername !== oldUsername) {
+                batch.update(doc(db, "users", user.uid), { username: newUsername });
+            }
+
+            await batch.commit();
 
             if (!draft && onSuccess) {
                 onSuccess();
             } else if (!draft) {
-                // Fallback if no onSuccess provided (though dashboard calls it)
                 router.push("/dashboard");
             }
         } catch (error) {
@@ -240,6 +366,23 @@ export function PhasedIntroductionForm({ initialData, onSuccess }: PhasedIntrodu
                                     />
                                 </div>
                                 <div>
+                                    <Label className="flex items-center justify-between">
+                                        <span>Username</span>
+                                        {isCheckingUsername && <span className="text-[10px] text-purple-400 animate-pulse">Checking...</span>}
+                                    </Label>
+                                    <div className="relative">
+                                        <span className="absolute left-3 top-2.5 text-slate-500 text-sm">@</span>
+                                        <Input
+                                            className={cn("pl-7", usernameError ? "border-rose-500 focus-visible:ring-rose-500" : "")}
+                                            placeholder="unique_username"
+                                            value={data.basicInfo?.username || ""}
+                                            onChange={(e) => handleUsernameChange(e.target.value)}
+                                        />
+                                    </div>
+                                    {usernameError && <p className="text-[11px] text-rose-400 mt-1">{usernameError}</p>}
+                                    <p className="text-[10px] text-slate-500 mt-1 italic">This will be your profile URL: aro-ace-midgard.com/profile/username</p>
+                                </div>
+                                <div>
                                     <Label>Date of Birth</Label>
                                     <Input
                                         type="date"
@@ -286,17 +429,19 @@ export function PhasedIntroductionForm({ initialData, onSuccess }: PhasedIntrodu
                                 </div>
                                 <div>
                                     <Label>Sexual Orientation</Label>
-                                    <Select value={data.identity?.sexualOrientation} onValueChange={(v) => setData(prev => ({ ...prev, identity: { ...prev.identity!, sexualOrientation: v } }))}>
-                                        <SelectTrigger><SelectValue placeholder="Select..." /></SelectTrigger>
-                                        <SelectContent>{C.SEXUAL_ORIENTATION_OPTIONS.map(o => <SelectItem key={o} value={o}>{o}</SelectItem>)}</SelectContent>
-                                    </Select>
+                                    <MultiSelect
+                                        options={toOptions(C.SEXUAL_ORIENTATION_OPTIONS)}
+                                        selected={data.identity?.sexualOrientation || []}
+                                        onChange={(val) => setData(prev => ({ ...prev, identity: { ...prev.identity!, sexualOrientation: val } }))}
+                                    />
                                 </div>
                                 <div>
                                     <Label>Romantic Orientation</Label>
-                                    <Select value={data.identity?.romanticOrientation} onValueChange={(v) => setData(prev => ({ ...prev, identity: { ...prev.identity!, romanticOrientation: v } }))}>
-                                        <SelectTrigger><SelectValue placeholder="Select..." /></SelectTrigger>
-                                        <SelectContent>{C.ROMANTIC_ORIENTATION_OPTIONS.map(o => <SelectItem key={o} value={o}>{o}</SelectItem>)}</SelectContent>
-                                    </Select>
+                                    <MultiSelect
+                                        options={toOptions(C.ROMANTIC_ORIENTATION_OPTIONS)}
+                                        selected={data.identity?.romanticOrientation || []}
+                                        onChange={(val) => setData(prev => ({ ...prev, identity: { ...prev.identity!, romanticOrientation: val } }))}
+                                    />
                                 </div>
                                 <div>
                                     <Label>Diet</Label>

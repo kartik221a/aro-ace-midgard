@@ -58,7 +58,7 @@ export default function AdminPage() {
     }
 
     return (
-        <div className="min-h-screen pt-24 pb-20 px-4 md:px-8">
+        <div className="min-h-screen pt-24 pb-20 px-6 md:px-10 lg:px-12">
             <div className="max-w-7xl mx-auto space-y-8">
                 <div className="flex items-center justify-between">
                     <div>
@@ -73,7 +73,7 @@ export default function AdminPage() {
                     </div>
                 </div>
 
-                <div className="glass p-6 rounded-2xl border border-white/10">
+                <div className="glass p-8 md:p-12 rounded-2xl border border-white/10">
                     <AdminOverview introductions={introductions} usersCount={usersCount} />
                 </div>
             </div>

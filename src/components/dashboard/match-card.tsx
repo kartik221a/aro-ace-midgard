@@ -102,7 +102,7 @@ export function MatchCard({ profile, type, isMatch, isSent, onPass, variant }: M
                 </div>
 
                 <div className="flex items-center gap-2 w-full mt-2">
-                    <Link href={`/profile/${uid}`} className="flex-1">
+                    <Link href={`/profile/${basicInfo?.username || uid}`} className="flex-1">
                         <Button variant="outline" size="sm" className={cn("w-full h-10 rounded-xl transition-colors", currentTheme.button)}>
                             View Profile <ArrowRight className="w-4 h-4 ml-1" />
                         </Button>

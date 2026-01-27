@@ -25,16 +25,27 @@ export default function ProfilePage() {
         const fetchIntro = async () => {
             if (!db) return;
             try {
-                const docRef = doc(db, "introductions", uid);
-                const docSnap = await getDoc(docRef);
+                // 1. Try direct lookup by UID
+                let finalUid = uid;
+                let docSnap = await getDoc(doc(db, "introductions", finalUid));
+
+                // 2. If not found, try lookup as username
+                if (!docSnap.exists()) {
+                    const userSnap = await getDoc(doc(db, "usernames", uid.toLowerCase()));
+                    if (userSnap.exists()) {
+                        finalUid = userSnap.data().uid;
+                        docSnap = await getDoc(doc(db, "introductions", finalUid));
+                    }
+                }
+
                 if (docSnap.exists()) {
                     setIntroduction(docSnap.data() as Introduction);
 
                     // Fetch like & match status if user is logged in
                     if (user) {
                         const [lStatus, mStatus] = await Promise.all([
-                            LikesService.getLikeStatus(user.uid, uid),
-                            LikesService.getMatchStatus(user.uid, uid)
+                            LikesService.getLikeStatus(user.uid, finalUid),
+                            LikesService.getMatchStatus(user.uid, finalUid)
                         ]);
                         setMyLikeStatus(lStatus);
                         setMatchStatus(mStatus);
@@ -66,7 +77,7 @@ export default function ProfilePage() {
         try {
             await LikesService.toggleLike(user.uid, introduction.uid, type);
             // Refresh match status after toggle
-            const mStatus = await LikesService.getMatchStatus(user.uid, uid);
+            const mStatus = await LikesService.getMatchStatus(user.uid, introduction.uid);
             setMatchStatus(mStatus);
         } catch (error) {
             console.error("Failed to toggle like", error);
