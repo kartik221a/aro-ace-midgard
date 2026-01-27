@@ -14,8 +14,13 @@ import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Slider } from "@/components/ui/slider";
 import { MultiSelect, Option } from "@/components/ui/multi-select";
-import { SearchableSelect } from "@/components/ui/searchable-select";
-import { SearchableMultiSelect } from "@/components/ui/searchable-multi-select";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { TagInput } from "@/components/ui/tag-input";
 import { ImageUploader } from "./image-uploader";
@@ -395,7 +400,7 @@ export function PhasedIntroductionForm({ initialData, onSuccess }: PhasedIntrodu
                                 </div>
                                 <div>
                                     <Label>Gender (Multi-select)</Label>
-                                    <SearchableMultiSelect
+                                    <MultiSelect
                                         options={toOptions(C.GENDER_OPTIONS)}
                                         selected={data.basicInfo?.gender || []}
                                         onChange={(val) => setData(prev => ({ ...prev, basicInfo: { ...prev.basicInfo!, gender: val } }))}
@@ -409,15 +414,14 @@ export function PhasedIntroductionForm({ initialData, onSuccess }: PhasedIntrodu
                             <div className="grid md:grid-cols-2 gap-6">
                                 <div>
                                     <Label>Pronouns</Label>
-                                    <SearchableSelect
-                                        options={toOptions(C.PRONOUN_OPTIONS)}
-                                        value={data.identity?.pronouns}
-                                        onChange={(v) => setData(prev => ({ ...prev, identity: { ...prev.identity!, pronouns: v } }))}
-                                    />
+                                    <Select value={data.identity?.pronouns} onValueChange={(v) => setData(prev => ({ ...prev, identity: { ...prev.identity!, pronouns: v } }))}>
+                                        <SelectTrigger><SelectValue placeholder="Select..." /></SelectTrigger>
+                                        <SelectContent>{C.PRONOUN_OPTIONS.map(o => <SelectItem key={o} value={o}>{o}</SelectItem>)}</SelectContent>
+                                    </Select>
                                 </div>
                                 <div>
                                     <Label>Ethnicity</Label>
-                                    <SearchableMultiSelect
+                                    <MultiSelect
                                         options={toOptions(C.ETHNICITY_OPTIONS)}
                                         selected={data.identity?.ethnicity || []}
                                         onChange={(val) => setData(prev => ({ ...prev, identity: { ...prev.identity!, ethnicity: val } }))}
@@ -425,7 +429,7 @@ export function PhasedIntroductionForm({ initialData, onSuccess }: PhasedIntrodu
                                 </div>
                                 <div>
                                     <Label>Sexual Orientation</Label>
-                                    <SearchableMultiSelect
+                                    <MultiSelect
                                         options={toOptions(C.SEXUAL_ORIENTATION_OPTIONS)}
                                         selected={data.identity?.sexualOrientation || []}
                                         onChange={(val) => setData(prev => ({ ...prev, identity: { ...prev.identity!, sexualOrientation: val } }))}
@@ -433,7 +437,7 @@ export function PhasedIntroductionForm({ initialData, onSuccess }: PhasedIntrodu
                                 </div>
                                 <div>
                                     <Label>Romantic Orientation</Label>
-                                    <SearchableMultiSelect
+                                    <MultiSelect
                                         options={toOptions(C.ROMANTIC_ORIENTATION_OPTIONS)}
                                         selected={data.identity?.romanticOrientation || []}
                                         onChange={(val) => setData(prev => ({ ...prev, identity: { ...prev.identity!, romanticOrientation: val } }))}
@@ -441,26 +445,30 @@ export function PhasedIntroductionForm({ initialData, onSuccess }: PhasedIntrodu
                                 </div>
                                 <div>
                                     <Label>Diet</Label>
-                                    <SearchableSelect
-                                        options={toOptions(C.DIET_OPTIONS)}
-                                        value={data.identity?.diet}
-                                        onChange={(v) => setData(prev => ({ ...prev, identity: { ...prev.identity!, diet: v } }))}
-                                    />
+                                    <Select value={data.identity?.diet} onValueChange={(v) => setData(prev => ({ ...prev, identity: { ...prev.identity!, diet: v } }))}>
+                                        <SelectTrigger><SelectValue placeholder="Select..." /></SelectTrigger>
+                                        <SelectContent>{C.DIET_OPTIONS.map(o => <SelectItem key={o} value={o}>{o}</SelectItem>)}</SelectContent>
+                                    </Select>
                                 </div>
                                 <div>
                                     <Label>Build</Label>
-                                    <SearchableSelect
-                                        options={toOptions(C.BUILD_OPTIONS)}
-                                        value={data.identity?.build}
-                                        onChange={(v) => setData(prev => ({ ...prev, identity: { ...prev.identity!, build: v } }))}
-                                    />
+                                    <Select value={data.identity?.build} onValueChange={(v) => setData(prev => ({ ...prev, identity: { ...prev.identity!, build: v } }))}>
+                                        <SelectTrigger><SelectValue placeholder="Select..." /></SelectTrigger>
+                                        <SelectContent>{C.BUILD_OPTIONS.map(o => <SelectItem key={o} value={o}>{o}</SelectItem>)}</SelectContent>
+                                    </Select>
                                 </div>
 
                                 <div className="md:col-span-2">
                                     <Label>Height</Label>
                                     <div className="flex items-center gap-4 mt-1">
-                                        <SearchableSelect options={Array.from({ length: 10 }).map((_, i) => ({ label: `${i} ft`, value: i.toString() }))} value={data.identity?.height?.ft} onChange={(v) => setData(prev => ({ ...prev, identity: { ...prev.identity!, height: { ...prev.identity!.height!, ft: v } } }))} />
-                                        <SearchableSelect options={Array.from({ length: 12 }).map((_, i) => ({ label: `${i} in`, value: i.toString() }))} value={data.identity?.height?.in} onChange={(v) => setData(prev => ({ ...prev, identity: { ...prev.identity!, height: { ...prev.identity!.height!, in: v } } }))} />
+                                        <Select value={data.identity?.height?.ft} onValueChange={(v) => setData(prev => ({ ...prev, identity: { ...prev.identity!, height: { ...prev.identity!.height!, ft: v } } }))}>
+                                            <SelectTrigger className="w-24"><SelectValue placeholder="Ft" /></SelectTrigger>
+                                            <SelectContent>{Array.from({ length: 10 }).map((_, i) => <SelectItem key={i} value={i.toString()}>{i} ft</SelectItem>)}</SelectContent>
+                                        </Select>
+                                        <Select value={data.identity?.height?.in} onValueChange={(v) => setData(prev => ({ ...prev, identity: { ...prev.identity!, height: { ...prev.identity!.height!, in: v } } }))}>
+                                            <SelectTrigger className="w-24"><SelectValue placeholder="In" /></SelectTrigger>
+                                            <SelectContent>{Array.from({ length: 12 }).map((_, i) => <SelectItem key={i} value={i.toString()}>{i} in</SelectItem>)}</SelectContent>
+                                        </Select>
                                         <div className="text-sm text-muted-foreground font-medium bg-slate-100 dark:bg-slate-800 px-3 py-2 rounded-md">
                                             {data.identity?.height?.cm || 0} cm
                                         </div>
@@ -483,11 +491,13 @@ export function PhasedIntroductionForm({ initialData, onSuccess }: PhasedIntrodu
                             <div className="space-y-8">
                                 <div>
                                     <Label className="text-lg">I am here for...</Label>
-                                    <SearchableSelect
-                                        options={toOptions(C.INTENT_OPTIONS)}
+                                    <Select
                                         value={data.lookingFor?.intent}
-                                        onChange={(v) => setData(prev => ({ ...prev, lookingFor: { ...prev.lookingFor!, intent: v as any } }))}
-                                    />
+                                        onValueChange={(v: any) => setData(prev => ({ ...prev, lookingFor: { ...prev.lookingFor!, intent: v } }))}
+                                    >
+                                        <SelectTrigger><SelectValue /></SelectTrigger>
+                                        <SelectContent>{C.INTENT_OPTIONS.map(o => <SelectItem key={o} value={o}>{o}</SelectItem>)}</SelectContent>
+                                    </Select>
                                 </div>
 
                                 {(data.lookingFor?.intent === "relationship" || data.lookingFor?.intent === "both") && (
@@ -496,13 +506,13 @@ export function PhasedIntroductionForm({ initialData, onSuccess }: PhasedIntrodu
                                         <div className="space-y-4 border-t border-white/10 pt-6">
                                             <h3 className="text-xl font-bold text-purple-300 bg-purple-500/10 p-2 px-4 inline-block rounded-md border border-purple-500/20">ME IF IN RELATIONSHIP</h3>
                                             <div className="grid md:grid-cols-2 gap-6">
-                                                <div><Label>Desire for Sex</Label><SearchableSelect options={toOptions(C.DESIRE_OPTIONS)} value={data.lookingFor?.personal?.sexDesire} onChange={(v) => setData(prev => ({ ...prev, lookingFor: { ...prev.lookingFor!, personal: { ...prev.lookingFor!.personal, sexDesire: v } } }))} /></div>
-                                                <div><Label>Desire for Romance</Label><SearchableSelect options={toOptions(C.DESIRE_OPTIONS)} value={data.lookingFor?.personal?.romanceDesire} onChange={(v) => setData(prev => ({ ...prev, lookingFor: { ...prev.lookingFor!, personal: { ...prev.lookingFor!.personal, romanceDesire: v } } }))} /></div>
-                                                <div><Label>Long Distance</Label><SearchableSelect options={toOptions(C.LONG_DISTANCE_OPTIONS)} value={data.lookingFor?.personal?.longDistance} onChange={(v) => setData(prev => ({ ...prev, lookingFor: { ...prev.lookingFor!, personal: { ...prev.lookingFor!.personal, longDistance: v } } }))} /></div>
-                                                <div><Label>QPR (Queer Platonic)</Label><SearchableSelect options={toOptions(C.QPR_OPTIONS)} value={data.lookingFor?.personal?.qpr} onChange={(v) => setData(prev => ({ ...prev, lookingFor: { ...prev.lookingFor!, personal: { ...prev.lookingFor!.personal, qpr: v } } }))} /></div>
-                                                <div><Label>Polyamory</Label><SearchableSelect options={toOptions(C.POLYAMORY_OPTIONS)} value={data.lookingFor?.personal?.polyamory} onChange={(v) => setData(prev => ({ ...prev, lookingFor: { ...prev.lookingFor!, personal: { ...prev.lookingFor!.personal, polyamory: v } } }))} /></div>
-                                                <div><Label>Kids</Label><SearchableSelect options={toOptions(C.KIDS_OPTIONS)} value={data.lookingFor?.personal?.kids} onChange={(v) => setData(prev => ({ ...prev, lookingFor: { ...prev.lookingFor!, personal: { ...prev.lookingFor!.personal, kids: v } } }))} /></div>
-                                                <div><Label>Marriage</Label><SearchableSelect options={toOptions(C.MARRIAGE_OPTIONS)} value={data.lookingFor?.personal?.marriage} onChange={(v) => setData(prev => ({ ...prev, lookingFor: { ...prev.lookingFor!, personal: { ...prev.lookingFor!.personal, marriage: v } } }))} /></div>
+                                                <div><Label>Desire for Sex</Label><Select value={data.lookingFor?.personal?.sexDesire} onValueChange={(v) => setData(prev => ({ ...prev, lookingFor: { ...prev.lookingFor!, personal: { ...prev.lookingFor!.personal, sexDesire: v } } }))}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent>{C.DESIRE_OPTIONS.map(o => <SelectItem key={o} value={o}>{o}</SelectItem>)}</SelectContent></Select></div>
+                                                <div><Label>Desire for Romance</Label><Select value={data.lookingFor?.personal?.romanceDesire} onValueChange={(v) => setData(prev => ({ ...prev, lookingFor: { ...prev.lookingFor!, personal: { ...prev.lookingFor!.personal, romanceDesire: v } } }))}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent>{C.DESIRE_OPTIONS.map(o => <SelectItem key={o} value={o}>{o}</SelectItem>)}</SelectContent></Select></div>
+                                                <div><Label>Long Distance</Label><Select value={data.lookingFor?.personal?.longDistance} onValueChange={(v) => setData(prev => ({ ...prev, lookingFor: { ...prev.lookingFor!, personal: { ...prev.lookingFor!.personal, longDistance: v } } }))}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent>{C.LONG_DISTANCE_OPTIONS.map(o => <SelectItem key={o} value={o}>{o}</SelectItem>)}</SelectContent></Select></div>
+                                                <div><Label>QPR (Queer Platonic)</Label><Select value={data.lookingFor?.personal?.qpr} onValueChange={(v) => setData(prev => ({ ...prev, lookingFor: { ...prev.lookingFor!, personal: { ...prev.lookingFor!.personal, qpr: v } } }))}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent>{C.QPR_OPTIONS.map(o => <SelectItem key={o} value={o}>{o}</SelectItem>)}</SelectContent></Select></div>
+                                                <div><Label>Polyamory</Label><Select value={data.lookingFor?.personal?.polyamory} onValueChange={(v) => setData(prev => ({ ...prev, lookingFor: { ...prev.lookingFor!, personal: { ...prev.lookingFor!.personal, polyamory: v } } }))}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent>{C.POLYAMORY_OPTIONS.map(o => <SelectItem key={o} value={o}>{o}</SelectItem>)}</SelectContent></Select></div>
+                                                <div><Label>Kids</Label><Select value={data.lookingFor?.personal?.kids} onValueChange={(v) => setData(prev => ({ ...prev, lookingFor: { ...prev.lookingFor!, personal: { ...prev.lookingFor!.personal, kids: v } } }))}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent>{C.KIDS_OPTIONS.map(o => <SelectItem key={o} value={o}>{o}</SelectItem>)}</SelectContent></Select></div>
+                                                <div><Label>Marriage</Label><Select value={data.lookingFor?.personal?.marriage} onValueChange={(v) => setData(prev => ({ ...prev, lookingFor: { ...prev.lookingFor!, personal: { ...prev.lookingFor!.personal, marriage: v } } }))}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent>{C.MARRIAGE_OPTIONS.map(o => <SelectItem key={o} value={o}>{o}</SelectItem>)}</SelectContent></Select></div>
                                             </div>
                                         </div>
 
@@ -519,7 +529,7 @@ export function PhasedIntroductionForm({ initialData, onSuccess }: PhasedIntrodu
                                                         className="mt-2"
                                                     />
                                                 </div>
-                                                <div><Label>Interested In (Genders)</Label><SearchableMultiSelect options={toOptions(C.GENDER_OPTIONS)} selected={data.lookingFor?.partner?.gender || []} onChange={(v) => setData(prev => ({ ...prev, lookingFor: { ...prev.lookingFor!, partner: { ...prev.lookingFor!.partner!, gender: v } } }))} /></div>
+                                                <div><Label>Interested In (Genders)</Label><MultiSelect options={toOptions(C.GENDER_OPTIONS)} selected={data.lookingFor?.partner?.gender || []} onChange={(v) => setData(prev => ({ ...prev, lookingFor: { ...prev.lookingFor!, partner: { ...prev.lookingFor!.partner!, gender: v } } }))} /></div>
 
                                                 <div>
                                                     <Label>Partner's Desire for Sex ({getDesireLabel(getDesireRange(data.lookingFor?.partner?.sexDesire))})</Label>
@@ -576,7 +586,7 @@ export function PhasedIntroductionForm({ initialData, onSuccess }: PhasedIntrodu
                                                 className="mt-2"
                                             />
                                         </div>
-                                        <div><Label>Interested In (Genders)</Label><SearchableMultiSelect options={toOptions(C.GENDER_OPTIONS)} selected={data.lookingFor?.friends?.gender || []} onChange={(v) => setData(prev => ({ ...prev, lookingFor: { ...prev.lookingFor!, friends: { ...prev.lookingFor!.friends!, gender: v } } }))} /></div>
+                                        <div><Label>Interested In (Genders)</Label><MultiSelect options={toOptions(C.GENDER_OPTIONS)} selected={data.lookingFor?.friends?.gender || []} onChange={(v) => setData(prev => ({ ...prev, lookingFor: { ...prev.lookingFor!, friends: { ...prev.lookingFor!.friends!, gender: v } } }))} /></div>
                                     </div>
                                 )}
                             </div>
@@ -585,21 +595,18 @@ export function PhasedIntroductionForm({ initialData, onSuccess }: PhasedIntrodu
                         {/* PHASE 5: LIFESTYLE */}
                         {activePhase === 4 && (
                             <div className="grid md:grid-cols-2 gap-6">
-                                <div><Label>Education</Label><SearchableSelect options={toOptions(C.EDUCATION_OPTIONS)} value={data.lifestyle?.education} onChange={(v) => setData(prev => ({ ...prev, lifestyle: { ...prev.lifestyle!, education: v } }))} /></div>
+                                <div><Label>Education</Label><Select value={data.lifestyle?.education} onValueChange={(v) => setData(prev => ({ ...prev, lifestyle: { ...prev.lifestyle!, education: v } }))}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent>{C.EDUCATION_OPTIONS.map(o => <SelectItem key={o} value={o}>{o}</SelectItem>)}</SelectContent></Select></div>
                                 <div><Label>Occupation</Label><Input value={data.lifestyle?.occupation || ""} onChange={(e) => setData(prev => ({ ...prev, lifestyle: { ...prev.lifestyle!, occupation: e.target.value } }))} placeholder="What do you do?" /></div>
 
                                 <div className="md:col-span-2 border-t my-2" />
 
-                                <div><Label>Alcohol</Label><SearchableSelect options={toOptions(C.ALCOHOL_OPTIONS)} value={data.lifestyle?.alcohol} onChange={(v) => setData(prev => ({ ...prev, lifestyle: { ...prev.lifestyle!, alcohol: v } }))} /></div>
-                                <div><Label>Smoke</Label><SearchableSelect options={toOptions(C.SMOKE_OPTIONS)} value={data.lifestyle?.smoke} onChange={(v) => setData(prev => ({ ...prev, lifestyle: { ...prev.lifestyle!, smoke: v } }))} /></div>
-                                <div><Label>Cannabis</Label><SearchableSelect options={toOptions(C.CANNABIS_OPTIONS)} value={data.lifestyle?.cannabis} onChange={(v) => setData(prev => ({ ...prev, lifestyle: { ...prev.lifestyle!, cannabis: v } }))} /></div>
-                                <div><Label>Drugs</Label><SearchableSelect options={toOptions(C.DRUGS_OPTIONS)} value={data.lifestyle?.drugs} onChange={(v) => setData(prev => ({ ...prev, lifestyle: { ...prev.lifestyle!, drugs: v } }))} /></div>
-
-                                <div className="md:col-span-2 border-t my-2" />
-
-                                <div><Label>Pets</Label><SearchableSelect options={toOptions(C.PETS_OPTIONS)} value={data.lifestyle?.pets} onChange={(v) => setData(prev => ({ ...prev, lifestyle: { ...prev.lifestyle!, pets: v } }))} /></div>
-                                <div><Label>Religion</Label><SearchableSelect options={toOptions(C.RELIGION_OPTIONS)} value={data.lifestyle?.religion} onChange={(v) => setData(prev => ({ ...prev, lifestyle: { ...prev.lifestyle!, religion: v } }))} /></div>
-                                <div><Label>Politics</Label><SearchableSelect options={toOptions(C.POLITICS_OPTIONS)} value={data.lifestyle?.politics} onChange={(v) => setData(prev => ({ ...prev, lifestyle: { ...prev.lifestyle!, politics: v } }))} /></div>
+                                <div><Label>Alcohol</Label><Select value={data.lifestyle?.alcohol} onValueChange={(v) => setData(prev => ({ ...prev, lifestyle: { ...prev.lifestyle!, alcohol: v } }))}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent>{C.ALCOHOL_OPTIONS.map(o => <SelectItem key={o} value={o}>{o}</SelectItem>)}</SelectContent></Select></div>
+                                <div><Label>Smoke</Label><Select value={data.lifestyle?.smoke} onValueChange={(v) => setData(prev => ({ ...prev, lifestyle: { ...prev.lifestyle!, smoke: v } }))}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent>{C.SMOKE_OPTIONS.map(o => <SelectItem key={o} value={o}>{o}</SelectItem>)}</SelectContent></Select></div>
+                                <div><Label>Cannabis</Label><Select value={data.lifestyle?.cannabis} onValueChange={(v) => setData(prev => ({ ...prev, lifestyle: { ...prev.lifestyle!, cannabis: v } }))}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent>{C.CANNABIS_OPTIONS.map(o => <SelectItem key={o} value={o}>{o}</SelectItem>)}</SelectContent></Select></div>
+                                <div><Label>Drugs</Label><Select value={data.lifestyle?.drugs} onValueChange={(v) => setData(prev => ({ ...prev, lifestyle: { ...prev.lifestyle!, drugs: v } }))}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent>{C.DRUGS_OPTIONS.map(o => <SelectItem key={o} value={o}>{o}</SelectItem>)}</SelectContent></Select></div>
+                                <div><Label>Pets</Label><Select value={data.lifestyle?.pets} onValueChange={(v) => setData(prev => ({ ...prev, lifestyle: { ...prev.lifestyle!, pets: v } }))}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent>{C.PETS_OPTIONS.map(o => <SelectItem key={o} value={o}>{o}</SelectItem>)}</SelectContent></Select></div>
+                                <div><Label>Religion</Label><Select value={data.lifestyle?.religion} onValueChange={(v) => setData(prev => ({ ...prev, lifestyle: { ...prev.lifestyle!, religion: v } }))}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent>{C.RELIGION_OPTIONS.map(o => <SelectItem key={o} value={o}>{o}</SelectItem>)}</SelectContent></Select></div>
+                                <div><Label>Politics</Label><Select value={data.lifestyle?.politics} onValueChange={(v) => setData(prev => ({ ...prev, lifestyle: { ...prev.lifestyle!, politics: v } }))}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent>{C.POLITICS_OPTIONS.map(o => <SelectItem key={o} value={o}>{o}</SelectItem>)}</SelectContent></Select></div>
 
                                 <div className="md:col-span-2">
                                     <Label>Interests</Label>

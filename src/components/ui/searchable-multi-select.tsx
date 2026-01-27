@@ -108,17 +108,18 @@ export function SearchableMultiSelect({
                         <CommandEmpty className="py-6 text-center text-sm text-slate-500">
                             No result found.
                         </CommandEmpty>
-                        <CommandGroup className="max-h-60 overflow-y-auto">
+                        <CommandGroup>
                             {options.map((option) => (
                                 <CommandItem
                                     key={option.value}
-                                    value={option.label}
+                                    value={option.label.toLowerCase()}
+                                    onPointerDown={(e) => e.preventDefault()}
                                     onSelect={() => toggleValue(option.value)}
-                                    className="text-slate-300 aria-selected:bg-purple-500/20 aria-selected:text-purple-300 cursor-pointer"
+                                    className="text-slate-300 aria-selected:bg-purple-500/20 aria-selected:text-purple-300"
                                 >
                                     <div
                                         className={cn(
-                                            "mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-purple-500/50",
+                                            "mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-purple-500/50 pointer-events-none",
                                             selected.includes(option.value)
                                                 ? "bg-purple-600 text-white"
                                                 : "opacity-50"
@@ -128,7 +129,7 @@ export function SearchableMultiSelect({
                                             <Check className="h-3 w-3" />
                                         )}
                                     </div>
-                                    {option.label}
+                                    <span className="pointer-events-none">{option.label}</span>
                                 </CommandItem>
                             ))}
                         </CommandGroup>

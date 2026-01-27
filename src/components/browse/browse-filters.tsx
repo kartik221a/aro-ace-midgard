@@ -6,9 +6,14 @@ import { Slider } from "@/components/ui/slider";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Search, X, Filter } from "lucide-react";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
 import { MultiSelect, Option } from "@/components/ui/multi-select";
-import { SearchableSelect } from "@/components/ui/searchable-select";
-import { SearchableMultiSelect } from "@/components/ui/searchable-multi-select";
 import * as C from "@/lib/constants";
 import { useState, useEffect } from "react";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"; // Assuming we have Sheet or similar for mobile, or I'll just use a collapsible div for simplicity first if Sheet isn't confirmed. 
@@ -233,55 +238,67 @@ export function BrowseFilters({ filters, setFilters, totalResults }: BrowseFilte
 
                         <hr className="border-white/10" />
 
+                        {/* Looking For (Intent) */}
                         <div className="space-y-2">
                             <Label className="text-slate-300">Looking For</Label>
-                            <SearchableSelect
+                            <Select
                                 value={filters.intents[0] || "all"}
-                                onChange={(val) => update("intents", val === "all" ? [] : [val])}
-                                options={[
-                                    { label: "Any Intent", value: "all" },
-                                    { label: "Friends Only", value: "friends" },
-                                    { label: "Relationship Only", value: "relationship" },
-                                    { label: "Friends & Relationship", value: "both" },
-                                ]}
-                            />
+                                onValueChange={(val) => update("intents", val === "all" ? [] : [val])}
+                            >
+                                <SelectTrigger className="bg-white/5 border-white/10 text-slate-200">
+                                    <SelectValue placeholder="Any Intent" />
+                                </SelectTrigger>
+                                <SelectContent className="bg-[#1a1d2d] border-white/10 text-slate-200">
+                                    <SelectItem value="all">Any Intent</SelectItem>
+                                    <SelectItem value="friends">Friends Only</SelectItem>
+                                    <SelectItem value="relationship">Relationship Only</SelectItem>
+                                    <SelectItem value="both">Friends & Relationship</SelectItem>
+                                </SelectContent>
+                            </Select>
                         </div>
 
+                        {/* Gender */}
                         <div className="space-y-2">
                             <Label className="text-slate-300">Gender</Label>
-                            <SearchableMultiSelect
+                            <MultiSelect
                                 options={toOptions(C.GENDER_OPTIONS)}
                                 selected={filters.genders}
                                 onChange={(val) => update("genders", val)}
                                 placeholder="Any Gender"
+                                className="bg-white/5 border-white/10 text-slate-200"
                             />
                         </div>
 
+                        {/* Sex Desire */}
                         <div className="space-y-2">
                             <Label className="text-slate-300">Desire for Sex</Label>
-                            <SearchableMultiSelect
+                            <MultiSelect
                                 options={toOptions(C.DESIRE_OPTIONS)}
                                 selected={filters.sexDesire}
                                 onChange={(val) => update("sexDesire", val)}
                                 placeholder="Any Preference"
+                                className="bg-white/5 border-white/10 text-slate-200"
                             />
                         </div>
 
+                        {/* Romance Desire */}
                         <div className="space-y-2">
                             <Label className="text-slate-300">Desire for Romance</Label>
-                            <SearchableMultiSelect
+                            <MultiSelect
                                 options={toOptions(C.DESIRE_OPTIONS)}
                                 selected={filters.romanceDesire}
                                 onChange={(val) => update("romanceDesire", val)}
                                 placeholder="Any Preference"
+                                className="bg-white/5 border-white/10 text-slate-200"
                             />
                         </div>
 
                         <hr className="border-slate-100" />
 
+                        {/* Long Distance */}
                         <div className="space-y-2">
                             <Label>Long Distance</Label>
-                            <SearchableMultiSelect
+                            <MultiSelect
                                 options={toOptions(C.LONG_DISTANCE_OPTIONS)}
                                 selected={filters.longDistance}
                                 onChange={(val) => update("longDistance", val)}
@@ -289,9 +306,10 @@ export function BrowseFilters({ filters, setFilters, totalResults }: BrowseFilte
                             />
                         </div>
 
+                        {/* QPR */}
                         <div className="space-y-2">
                             <Label>QPR</Label>
-                            <SearchableMultiSelect
+                            <MultiSelect
                                 options={toOptions(C.QPR_OPTIONS)}
                                 selected={filters.qpr}
                                 onChange={(val) => update("qpr", val)}
@@ -299,9 +317,10 @@ export function BrowseFilters({ filters, setFilters, totalResults }: BrowseFilte
                             />
                         </div>
 
+                        {/* Polyamory */}
                         <div className="space-y-2">
                             <Label>Polyamory</Label>
-                            <SearchableMultiSelect
+                            <MultiSelect
                                 options={toOptions(C.POLYAMORY_OPTIONS)}
                                 selected={filters.polyamory}
                                 onChange={(val) => update("polyamory", val)}
@@ -309,9 +328,10 @@ export function BrowseFilters({ filters, setFilters, totalResults }: BrowseFilte
                             />
                         </div>
 
+                        {/* Marriage */}
                         <div className="space-y-2">
                             <Label>Marriage</Label>
-                            <SearchableMultiSelect
+                            <MultiSelect
                                 options={toOptions(C.MARRIAGE_OPTIONS)}
                                 selected={filters.marriage}
                                 onChange={(val) => update("marriage", val)}

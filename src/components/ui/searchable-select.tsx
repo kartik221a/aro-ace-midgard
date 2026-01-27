@@ -65,24 +65,25 @@ export function SearchableSelect({
                         <CommandEmpty className="py-6 text-center text-sm text-slate-500">
                             No result found.
                         </CommandEmpty>
-                        <CommandGroup className="max-h-60 overflow-y-auto">
+                        <CommandGroup>
                             {options.map((option) => (
                                 <CommandItem
                                     key={option.value}
-                                    value={option.label}
+                                    value={option.label.toLowerCase()}
+                                    onPointerDown={(e) => e.preventDefault()}
                                     onSelect={() => {
                                         onChange(option.value);
                                         setOpen(false);
                                     }}
-                                    className="text-slate-300 aria-selected:bg-purple-500/20 aria-selected:text-purple-300 cursor-pointer"
+                                    className="text-slate-300 aria-selected:bg-purple-500/20 aria-selected:text-purple-300"
                                 >
                                     <Check
                                         className={cn(
-                                            "mr-2 h-4 w-4",
+                                            "mr-2 h-4 w-4 pointer-events-none",
                                             value === option.value ? "opacity-100" : "opacity-0"
                                         )}
                                     />
-                                    {option.label}
+                                    <span className="pointer-events-none">{option.label}</span>
                                 </CommandItem>
                             ))}
                         </CommandGroup>
