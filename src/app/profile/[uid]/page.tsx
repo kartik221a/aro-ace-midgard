@@ -7,6 +7,8 @@ import { db } from "@/lib/firebase/client";
 import { Introduction } from "@/types";
 import { Button } from "@/components/ui/button";
 import { ProfileDisplay } from "@/components/profile-display";
+import { Clock } from "lucide-react";
+import Link from "next/link";
 
 import { useAuth } from "@/lib/auth-context";
 import { LikesService, LikeType } from "@/lib/services/likes";
@@ -121,6 +123,24 @@ export default function ProfilePage() {
 
     const isOwnProfile = user?.uid === introduction.uid;
     const isAdmin = userData?.role === "admin";
+    const isFirstTimePending = introduction.status === "pending" && !introduction.pendingUpdate;
+
+    if (isFirstTimePending && !isOwnProfile && !isAdmin) {
+        return (
+            <div className="min-h-screen pt-24 pb-20 px-4 flex flex-col items-center justify-center text-center">
+                <div className="h-20 w-20 bg-white/5 rounded-2xl flex items-center justify-center mb-6 border border-white/10">
+                    <Clock className="w-10 h-10 text-slate-500" />
+                </div>
+                <h1 className="text-3xl font-bold text-white mb-4 tracking-tight">Profile Under Review</h1>
+                <p className="text-slate-400 max-w-md mx-auto mb-8 leading-relaxed">
+                    This cosmic explorer is currently having their introduction reviewed by our moderators to ensure a safe and authentic community.
+                </p>
+                <Button asChild className="h-12 px-8 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500">
+                    <Link href="/browse">Browse Other Profiles</Link>
+                </Button>
+            </div>
+        );
+    }
 
     // If owner or admin is viewing a profile with a pending update, show the pending data as a preview
     const displayData = (isOwnProfile || isAdmin) && introduction.pendingUpdate

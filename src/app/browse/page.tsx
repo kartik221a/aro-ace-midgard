@@ -9,7 +9,7 @@ import { SectionDivider } from "@/components/ui/section-divider";
 import { IntroductionCard } from "@/components/introduction-card";
 import { BrowseFilters, FilterState } from "@/components/browse/browse-filters";
 import { Button } from "@/components/ui/button";
-import { Filter, ChevronLeft, ChevronRight } from "lucide-react";
+import { Filter, ChevronLeft, ChevronRight, Clock, ShieldCheck } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 import { PaginationControls } from "@/components/ui/pagination-controls";
 import { useAuth } from "@/lib/auth-context";
@@ -26,6 +26,7 @@ export default function BrowsePage() {
     const [loading, setLoading] = useState(true);
     const [myLikes, setMyLikes] = useState<Record<string, LikeType>>({});
     const [myMatches, setMyMatches] = useState<Record<string, LikeType>>({});
+    const [myProfile, setMyProfile] = useState<Introduction | null>(null);
     const [hasProfile, setHasProfile] = useState<boolean | null>(null);
     const [currentPage, setCurrentPage] = useState(1);
 
@@ -42,7 +43,14 @@ export default function BrowsePage() {
             const checkProfile = async () => {
                 if (db) {
                     const docSnap = await getDoc(doc(db, "introductions", user.uid));
-                    setHasProfile(docSnap.exists());
+                    if (docSnap.exists()) {
+                        const data = docSnap.data() as Introduction;
+                        setMyProfile(data);
+                        setHasProfile(true);
+                    } else {
+                        setMyProfile(null);
+                        setHasProfile(false);
+                    }
                 }
             };
             checkProfile();
@@ -251,6 +259,61 @@ export default function BrowsePage() {
                             <Link href="/dashboard">Create Your Profile</Link>
                         </Button>
                         <p className="text-sm text-slate-500 mt-4 italic">It only takes a few minutes to connect with the cosmos.</p>
+                    </div>
+                </motion.div>
+            </div>
+        );
+    }
+
+    // Restriction for first-time pending profiles
+    const isFirstTimePending = myProfile?.status === "pending" && !myProfile?.pendingUpdate;
+
+    if (isFirstTimePending) {
+        return (
+            <div className="min-h-screen pt-24 pb-20 px-4 relative flex flex-col items-center justify-center overflow-hidden">
+                <div className="absolute inset-0 z-0">
+                    <Orb hue={260} hoverIntensity={0.5} rotateOnHover={true} />
+                </div>
+
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="max-w-xl w-full text-center space-y-8 glass p-8 md:p-12 rounded-3xl border border-white/10 relative z-10 backdrop-blur-2xl shadow-2xl shadow-indigo-500/10"
+                >
+                    <div className="h-20 w-20 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl mx-auto flex items-center justify-center shadow-lg shadow-indigo-500/20 -rotate-6">
+                        <Clock className="w-10 h-10 text-white" />
+                    </div>
+
+                    <div className="space-y-4">
+                        <GradientText
+                            colors={["#6366f1", "#8b5cf6", "#a855f7"]}
+                            animationSpeed={3}
+                            showBorder={false}
+                            className="text-3xl md:text-4xl font-bold tracking-tight"
+                        >
+                            Under Review
+                        </GradientText>
+                        <p className="text-slate-400 text-lg leading-relaxed">
+                            Your profile is currently under review by our cosmic moderators.
+                        </p>
+                        <div className="bg-white/5 border border-white/10 rounded-xl p-4 flex items-center gap-4 text-left">
+                            <div className="h-10 w-10 shrink-0 bg-emerald-500/20 rounded-full flex items-center justify-center">
+                                <ShieldCheck className="w-5 h-5 text-emerald-400" />
+                            </div>
+                            <p className="text-sm text-slate-300">
+                                This helps us keep the community safe and authentic. Once approved, you'll be able to browse and connect with others!
+                            </p>
+                        </div>
+                    </div>
+
+                    <div className="pt-4">
+                        <Button
+                            asChild
+                            variant="outline"
+                            className="w-full h-14 text-lg font-bold border-white/10 hover:bg-white/5 text-slate-300 rounded-xl transition-all"
+                        >
+                            <Link href="/dashboard">View Your Draft</Link>
+                        </Button>
                     </div>
                 </motion.div>
             </div>
