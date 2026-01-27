@@ -95,25 +95,18 @@ export function ImageUploader({ images, onChange, maxImages = 5, showMainLabel =
             try {
                 const files = Array.from(e.target.files);
                 const uploadPromises = files.map(async (file) => {
-                    console.log(`[Upload] Starting: ${file.name}`);
-
                     // Compress image
                     let fileToUpload: Blob = file;
                     try {
                         fileToUpload = await compressImage(file);
-                        console.log(`[Upload] Compressed: ${file.name}`);
                     } catch (err) {
                         console.warn(`[Upload] Compression failed for ${file.name}, using original.`, err);
                     }
 
-                    // Prepare FormData for Cloudinary
                     const formData = new FormData();
                     formData.append("file", fileToUpload);
                     formData.append("upload_preset", uploadPreset);
-                    // Optional: Add folder if you want to organize them
-                    // formData.append("folder", "aro-ace-midgard");
 
-                    console.log(`[Upload] Sending to Cloudinary...`);
                     const response = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
                         method: "POST",
                         body: formData,
@@ -125,19 +118,49 @@ export function ImageUploader({ images, onChange, maxImages = 5, showMainLabel =
                     }
 
                     const data = await response.json();
-                    console.log(`[Upload] Success: ${data.secure_url}`);
-                    return data.secure_url; // Cloudinary returns 'secure_url'
+                    return data.secure_url;
                 });
 
                 const uploadedUrls = await Promise.all(uploadPromises);
-                onChange([...images, ...uploadedUrls].slice(0, maxImages));
-                console.log("[Upload] All files processing complete.");
+
+                // --- Cleanup Logic ---
+                let urlsToDelete: string[] = [];
+                let finalImages: string[] = [];
+
+                if (maxImages === 1) {
+                    // Single image replacement (e.g. Cover Photo)
+                    if (images.length > 0) {
+                        urlsToDelete = [...images];
+                    }
+                    finalImages = [uploadedUrls[uploadedUrls.length - 1]]; // Take the last one uploaded
+                } else {
+                    // Gallery: handle overflow
+                    const combined = [...images, ...uploadedUrls];
+                    if (combined.length > maxImages) {
+                        // Anything beyond maxImages gets deleted
+                        finalImages = combined.slice(0, maxImages);
+                        urlsToDelete = combined.slice(maxImages);
+                    } else {
+                        finalImages = combined;
+                    }
+                }
+
+                // Trigger deletions in background for replaced/bumped images
+                if (urlsToDelete.length > 0) {
+                    console.log(`[Cloudinary] Cleaning up ${urlsToDelete.length} replaced/overflow images...`);
+                    fetch("/api/cloudinary/delete", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ urls: urlsToDelete }),
+                    }).catch(err => console.error("[Cloudinary] Cleanup failed:", err));
+                }
+
+                onChange(finalImages);
             } catch (error: any) {
                 console.error("[Upload] Critical Failure:", error);
                 alert(`Failed to upload images: ${error.message || "Unknown error"}`);
             } finally {
                 setUploading(false);
-                // Reset input
                 e.target.value = "";
             }
         }
