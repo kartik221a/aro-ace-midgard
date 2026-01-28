@@ -17,31 +17,28 @@ export function TextLoopSection() {
 const testimonials = [
     {
         quote:
-            "It was the best of times, it was the worst of times, it was the age of wisdom, it was the age of foolishness, it was the epoch of belief, it was the epoch of incredulity, it was the season of Light, it was the season of Darkness, it was the spring of hope, it was the winter of despair.",
-        name: "Charles Dickens",
-        title: "A Tale of Two Cities",
+            "In The Lover's Dictionary, expresses a desire to love and be loved without the desire for a lover.",
+        name: "David Levithan",
+
     },
     {
         quote:
-            "To be, or not to be, that is the question: Whether 'tis nobler in the mind to suffer The slings and arrows of outrageous fortune, Or to take Arms against a Sea of troubles, And by opposing end them: to die, to sleep.",
-        name: "William Shakespeare",
-        title: "Hamlet",
+            "Give your friendships the magic you would give a romance. Because they're just as important. Actually, for us, they're way more important.",
+        name: "Alice Oseman",
+
     },
     {
-        quote: "All that we see or seem is but a dream within a dream.",
-        name: "Edgar Allan Poe",
-        title: "A Dream Within a Dream",
-    },
-    {
-        quote:
-            "It is a truth universally acknowledged, that a single man in possession of a good fortune, must be in want of a wife.",
-        name: "Jane Austen",
-        title: "Pride and Prejudice",
+        quote: "It wasn't that she hated the idea of sex, just . . . she didn't want it. Didn't need it. But no one else ever seemed to feel that way.",
+        name: "Elyse Springer",
     },
     {
         quote:
-            "Call me Ishmael. Some years ago—never mind how long precisely—having little or no money in my purse, and nothing particular to interest me on shore, I thought I would sail about a little and see the watery part of the world.",
-        name: "Herman Melville",
-        title: "Moby-Dick",
+            "Frequently associated with the aromantic spectrum, Tesla remained celibate and stated that his lack of sexual interest was \"integral to his scientific abilities and achievements,\" noting he found all necessary stimulation in his work.",
+        name: "Nikola Tesla",
+    },
+    {
+        quote:
+            "Some people misinterpret aesthetic appreciation, romantic attraction, or sexual arousal as being sexual attraction, only to realize later that they are asexual.",
+        name: "Julie Sondra Decker",
     },
 ];
