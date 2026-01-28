@@ -246,7 +246,7 @@ export default function DashboardPage() {
                                                 <div>
                                                     <h4 className="text-red-100 font-bold text-lg mb-1">Reason for Rejection:</h4>
                                                     <p className="text-red-200/80 leading-relaxed">
-                                                        {introduction.rejectionReason}
+                                                        {introduction.rejectionReason || "No specific reason provided. Please ensure your profile meets the community guidelines."}
                                                     </p>
                                                 </div>
                                             </div>

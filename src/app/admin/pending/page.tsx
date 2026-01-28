@@ -92,6 +92,17 @@ export default function AdminPendingPage() {
             updatedAt: serverTimestamp(),
         };
 
+        if (status === 'rejected') {
+            updateData.rejectionReason = reason || "";
+            updateData.rejectedBy = user.uid;
+            updateData.reviewedAt = Date.now();
+        } else if (status === 'approved') {
+            updateData.rejectionReason = null;
+            updateData.rejectedBy = null;
+            updateData.approvedBy = user.uid;
+            updateData.reviewedAt = Date.now();
+        }
+
         try {
             const docRef = doc(db!, "introductions", uid);
             if (status === 'approved') {
@@ -108,7 +119,9 @@ export default function AdminPendingPage() {
                             approvedBy: user.uid,
                             reviewedAt: Date.now(),
                             updatedAt: serverTimestamp(),
-                            pendingUpdate: null // Clear it
+                            pendingUpdate: null, // Clear it
+                            rejectionReason: null,
+                            rejectedBy: null
                         };
                         await updateDoc(docRef, mergedData);
                         return;

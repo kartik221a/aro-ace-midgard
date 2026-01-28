@@ -349,7 +349,7 @@ export function PhasedIntroductionForm({ initialData, onSuccess }: PhasedIntrodu
                                 <div>
                                     <h4 className="text-red-100 font-bold mb-1">Reason for Rejection:</h4>
                                     <p className="text-red-200/80 text-sm leading-relaxed">
-                                        {initialData.rejectionReason}
+                                        {initialData.rejectionReason || "No specific reason provided. Please ensure your profile meets the community guidelines."}
                                     </p>
                                 </div>
                             </div>
