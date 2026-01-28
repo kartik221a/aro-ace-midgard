@@ -244,9 +244,9 @@ export default function DashboardPage() {
                                                     <AlertTriangle className="w-6 h-6" />
                                                 </div>
                                                 <div>
-                                                    <h4 className="text-red-100 font-bold text-lg mb-1">Profile Needs Attention</h4>
+                                                    <h4 className="text-red-100 font-bold text-lg mb-1">Reason for Rejection:</h4>
                                                     <p className="text-red-200/80 leading-relaxed">
-                                                        {introduction.rejectionReason || "Please review your profile details and resubmit for approval."}
+                                                        {introduction.rejectionReason}
                                                     </p>
                                                 </div>
                                             </div>

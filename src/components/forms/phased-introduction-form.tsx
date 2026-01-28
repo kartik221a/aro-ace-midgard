@@ -26,7 +26,7 @@ import { TagInput } from "@/components/ui/tag-input";
 import { ImageUploader } from "./image-uploader";
 import * as C from "@/lib/constants";
 import { Card, CardContent } from "@/components/ui/card";
-import { Plus, Trash2 } from "lucide-react";
+import { Plus, Trash2, AlertTriangle } from "lucide-react";
 import { CountrySelector } from "@/components/ui/country-selector";
 
 // Helper to convert string array to Options
@@ -340,6 +340,20 @@ export function PhasedIntroductionForm({ initialData, onSuccess }: PhasedIntrodu
                 <Card className="bg-white/5 border-white/10 backdrop-blur-md">
                     <CardContent className="p-6">
                         <h2 className="text-2xl font-bold mb-6 text-white">{PHASES[activePhase]}</h2>
+
+                        {initialData?.status === "rejected" && initialData.rejectionReason && (
+                            <div className="mb-8 p-5 rounded-xl bg-red-500/10 border border-red-500/20 flex items-start gap-4">
+                                <div className="p-2 bg-red-500/20 rounded-lg text-red-400 shrink-0">
+                                    <AlertTriangle className="w-5 h-5" />
+                                </div>
+                                <div>
+                                    <h4 className="text-red-100 font-bold mb-1">Reason for Rejection:</h4>
+                                    <p className="text-red-200/80 text-sm leading-relaxed">
+                                        {initialData.rejectionReason}
+                                    </p>
+                                </div>
+                            </div>
+                        )}
 
                         {/* PHASE 1: IMAGES */}
                         {activePhase === 0 && (
