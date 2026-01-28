@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { doc, setDoc, getDoc, serverTimestamp, writeBatch, deleteDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase/client";
 import { useAuth } from "@/lib/auth-context";
-import { Introduction, LongDescriptionSection } from "@/types";
+import { Introduction, LongDescriptionSection, IntroductionStatus } from "@/types";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -207,10 +207,18 @@ export function PhasedIntroductionForm({ initialData, onSuccess }: PhasedIntrodu
             const isApproved = initialData?.status === "approved";
             const batch = writeBatch(db);
 
+            const isSubmission = !draft;
+            const currentStatus = initialData?.status || "pending";
+
+            let targetStatus: IntroductionStatus = isAdmin ? "approved" : "pending";
+            if (draft) {
+                targetStatus = currentStatus;
+            }
+
             let updatePayload: any = {
                 updatedAt: serverTimestamp(),
                 uid: user.uid,
-                status: isAdmin ? "approved" : "pending"
+                status: targetStatus
             };
 
             // Username management
@@ -244,9 +252,11 @@ export function PhasedIntroductionForm({ initialData, onSuccess }: PhasedIntrodu
                     updatedAt: Date.now()
                 };
 
-                updatePayload.status = "pending";
+                updatePayload.status = targetStatus;
             } else {
-                const normalizedData = { ...data };
+                const { status, approvedBy, rejectedBy, reviewedAt, rejectionReason, pendingUpdate, ...cleanData } = data as Introduction;
+
+                const normalizedData = { ...cleanData };
                 if (normalizedData.identity) {
                     if (typeof normalizedData.identity.sexualOrientation === 'string') {
                         normalizedData.identity.sexualOrientation = [normalizedData.identity.sexualOrientation];
@@ -263,9 +273,14 @@ export function PhasedIntroductionForm({ initialData, onSuccess }: PhasedIntrodu
                     pendingUpdate: null
                 };
 
-                if (isAdmin) {
+                // Clear rejection info ONLY on submission
+                if (isSubmission || isAdmin) {
                     updatePayload.rejectedBy = null;
                     updatePayload.rejectionReason = null;
+                } else if (currentStatus === 'rejected') {
+                    // Keep them if it's just a draft of a rejected profile
+                    updatePayload.rejectionReason = initialData?.rejectionReason;
+                    updatePayload.rejectedBy = initialData?.rejectedBy;
                 }
             }
 

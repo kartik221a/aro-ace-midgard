@@ -9,7 +9,7 @@ import { Introduction } from "@/types";
 import { Button } from "@/components/ui/button";
 import { PhasedIntroductionForm } from "@/components/forms/phased-introduction-form";
 import { ProfileDisplay } from "@/components/profile-display";
-import { Edit2, Users, Heart } from "lucide-react";
+import { Edit2, Users, Heart, AlertTriangle } from "lucide-react";
 import Link from "next/link";
 import { useMatchmakingCounts } from "@/hooks/use-matchmaking-counts";
 import MagicBento from "@/components/ui/reactbits/MagicBento";
@@ -234,14 +234,25 @@ export default function DashboardPage() {
                                 <>
                                     {introduction.status === 'rejected' && (
                                         <motion.div
-                                            initial={{ opacity: 0, x: -20 }}
-                                            animate={{ opacity: 1, x: 0 }}
-                                            className="p-4 rounded-xl bg-red-500/10 border border-red-500/20 flex flex-col md:flex-row items-center justify-between gap-4"
+                                            initial={{ opacity: 0, y: -10 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            className="p-6 rounded-2xl bg-red-500/10 border border-red-500/20 flex flex-col md:flex-row items-center justify-between gap-6 overflow-hidden relative"
                                         >
-                                            <div className="text-red-200">
-                                                <span className="font-bold text-red-100">Profile Returned:</span> {introduction.rejectionReason}
+                                            <div className="absolute top-0 left-0 w-1 h-full bg-red-500" />
+                                            <div className="flex items-start gap-4">
+                                                <div className="p-3 bg-red-500/20 rounded-xl text-red-400">
+                                                    <AlertTriangle className="w-6 h-6" />
+                                                </div>
+                                                <div>
+                                                    <h4 className="text-red-100 font-bold text-lg mb-1">Profile Needs Attention</h4>
+                                                    <p className="text-red-200/80 leading-relaxed">
+                                                        {introduction.rejectionReason || "Please review your profile details and resubmit for approval."}
+                                                    </p>
+                                                </div>
                                             </div>
-                                            <Button variant="destructive" onClick={() => setIsEditing(true)}>Fix & Resubmit</Button>
+                                            <MagnetButton variant="destructive" onClick={() => setIsEditing(true)} className="bg-red-600 hover:bg-red-700 text-white font-bold px-6 py-3 rounded-xl shrink-0">
+                                                Fix & Resubmit
+                                            </MagnetButton>
                                         </motion.div>
                                     )}
 

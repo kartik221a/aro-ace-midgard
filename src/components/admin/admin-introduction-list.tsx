@@ -138,7 +138,7 @@ export function AdminIntroductionList({ introductions, onUpdateStatus, type }: A
                     <DialogHeader>
                         <DialogTitle className="text-white">Reject Introduction</DialogTitle>
                         <DialogDescription className="text-slate-400">
-                            Please provide a reason for rejecting this profile. This will be visible to other admins.
+                            Please provide a reason for rejecting this profile. This will be visible to the user helping them to correct their profile.
                         </DialogDescription>
                     </DialogHeader>
                     <div className="grid gap-4 py-4">
