@@ -1,6 +1,11 @@
 
 // Enums/Constants
-export const GENDER_OPTIONS = ["agender", "bigender", "male", "female", "feminine", "gender fluid", "non-binary"];
+export const GENDER_OPTIONS = [
+    "Agender", "Bigender", "Demigender", "Genderfluid", "Genderqueer",
+    "Neurogender", "Neutrois", "Non-binary", "Pangender", "Queer",
+    "Xenogender", "Transman", "Transwoman", "Intersex", "Androgynous",
+    "Demigirl", "Demiboy", "Transvestite", "Male", "Female", "Interbinary"
+];
 export const PRONOUN_OPTIONS = ["he/him/his", "she/her/hers", "they/them/theirs", "it/its", "other"];
 export const INTENT_OPTIONS = ["friends", "relationship", "both"] as const;
 

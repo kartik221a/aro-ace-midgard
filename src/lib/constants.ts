@@ -1,5 +1,8 @@
 export const GENDER_OPTIONS = [
-    "agender", "bigender", "male", "female", "feminine", "gender fluid", "non-binary"
+    "Agender", "Bigender", "Demigender", "Genderfluid", "Genderqueer",
+    "Neurogender", "Neutrois", "Non-binary", "Pangender", "Queer",
+    "Xenogender", "Transman", "Transwoman", "Intersex", "Androgynous",
+    "Demigirl", "Demiboy", "Transvestite", "Male", "Female", "Interbinary"
 ];
 
 export const PRONOUN_OPTIONS = [
