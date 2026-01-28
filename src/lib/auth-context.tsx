@@ -36,11 +36,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         }
 
         const unsubscribeAuth = onAuthStateChanged(auth as Auth, async (currentUser) => {
-            setUser(currentUser);
             if (currentUser) {
+                // If it's a password user, check if email is verified
+                const isPasswordUser = currentUser.providerData.some(p => p.providerId === 'password');
+                if (isPasswordUser && !currentUser.emailVerified) {
+                    setUser(null);
+                    setUserData(null);
+                    setLoading(false);
+                    document.cookie = "session=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT";
+                    return;
+                }
+
+                setUser(currentUser);
                 // Set a simple session cookie for middleware to check
                 document.cookie = "session=true; path=/";
             } else {
+                setUser(null);
                 setUserData(null);
                 setLoading(false);
                 // Remove cookie

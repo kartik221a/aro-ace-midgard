@@ -9,7 +9,9 @@ import {
     signInWithPopup,
     GoogleAuthProvider,
     createUserWithEmailAndPassword,
-    signInWithEmailAndPassword
+    signInWithEmailAndPassword,
+    sendEmailVerification,
+    signOut
 } from "firebase/auth";
 import { doc, getDoc, setDoc, serverTimestamp } from "firebase/firestore";
 import { useAuth } from "@/lib/auth-context";
@@ -26,6 +28,7 @@ export default function LoginPage() {
     const [password, setPassword] = useState("");
     const [isSignUp, setIsSignUp] = useState(false);
     const [error, setError] = useState("");
+    const [message, setMessage] = useState("");
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
@@ -57,6 +60,9 @@ export default function LoginPage() {
         e.preventDefault();
         setLoading(true);
         setError("");
+        setMessage("");
+
+        console.log("Starting email auth:", isSignUp ? "Sign Up" : "Sign In", email);
 
         try {
             if (!auth) {
@@ -65,14 +71,41 @@ export default function LoginPage() {
             }
 
             if (isSignUp) {
+                console.log("Creating user with email/password...");
                 const result = await createUserWithEmailAndPassword(auth, email, password);
-                await checkAndCreateUser(result.user);
+                console.log("User created, sending verification email...");
+                await sendEmailVerification(result.user);
+                console.log("Verification email sent, signing out...");
+                await signOut(auth);
+                console.log("Signed out successfully.");
+                setMessage("An account has been created. A verification link has been sent to your email. Please verify your email before logging in.");
+                setIsSignUp(false);
+                setEmail("");
+                setPassword("");
             } else {
-                await signInWithEmailAndPassword(auth, email, password);
+                console.log("Signing in...");
+                const result = await signInWithEmailAndPassword(auth, email, password);
+                console.log("Sign in successful, checking verification status:", result.user.emailVerified);
+                if (!result.user.emailVerified) {
+                    console.log("Email not verified, resending link and signing out...");
+                    await sendEmailVerification(result.user);
+                    await signOut(auth);
+                    setError("Your email is not verified. A new verification link has been sent to your inbox.");
+                    return;
+                }
+                console.log("Verification check passed, creating/fetching user data...");
+                await checkAndCreateUser(result.user);
+                router.push("/dashboard");
             }
-            router.push("/dashboard");
         } catch (err: any) {
-            setError(err.message);
+            console.error("Auth error:", err);
+            if (err.code === "auth/email-already-in-use") {
+                setIsSignUp(false);
+                setError("");
+                setMessage("This email is already registered. We've switched you to Sign In. Please enter your password to continue. If your email isn't verified, a link will be sent.");
+            } else {
+                setError(err.message);
+            }
         } finally {
             setLoading(false);
         }
@@ -147,9 +180,45 @@ export default function LoginPage() {
                             <motion.div
                                 initial={{ opacity: 0, scale: 0.95 }}
                                 animate={{ opacity: 1, scale: 1 }}
-                                className="text-sm text-red-200 bg-red-500/20 border border-red-500/30 p-3 rounded-lg text-center backdrop-blur-sm"
+                                className="text-sm text-red-200 bg-red-500/20 border border-red-500/30 p-4 rounded-xl text-center backdrop-blur-sm"
                             >
-                                {error}
+                                <p>{error}</p>
+                                {error.includes("not verified") && (
+                                    <button
+                                        type="button"
+                                        onClick={async () => {
+                                            if (!email || !password) {
+                                                setError("Please enter your email and password to resend the link.");
+                                                return;
+                                            }
+                                            try {
+                                                setLoading(true);
+                                                const result = await signInWithEmailAndPassword(auth!, email, password);
+                                                await sendEmailVerification(result.user);
+                                                await signOut(auth!);
+                                                setMessage("A new verification link has been sent to your inbox.");
+                                                setError("");
+                                            } catch (err: any) {
+                                                setError("Failed to resend: " + err.message);
+                                            } finally {
+                                                setLoading(false);
+                                            }
+                                        }}
+                                        className="mt-2 text-white underline font-bold hover:text-white/80 transition-colors"
+                                    >
+                                        Resend Verification Link
+                                    </button>
+                                )}
+                            </motion.div>
+                        )}
+
+                        {message && (
+                            <motion.div
+                                initial={{ opacity: 0, scale: 0.95 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                className="text-sm text-green-200 bg-green-500/20 border border-green-500/30 p-4 rounded-xl text-center backdrop-blur-sm"
+                            >
+                                {message}
                             </motion.div>
                         )}
 
