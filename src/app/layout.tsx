@@ -2,6 +2,7 @@
 
 import type { Metadata } from "next";
 import { Outfit, Inter } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
@@ -34,6 +35,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <Script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2578730837967023"
+          crossOrigin="anonymous"
+          strategy="afterInteractive"
+        />
+      </head>
       <body
         className={cn(
           "min-h-screen bg-black font-sans antialiased",
